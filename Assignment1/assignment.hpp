@@ -14,7 +14,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include <vector>
-#include <tuple>
+// #include <tuple>
 
 // Translation Parameters
 GLfloat xpos=0.0,ypos=0.0,zpos=0.0;
@@ -33,8 +33,9 @@ int mode = 0;
 int intTemp = 0;
 
 //Vertices
-std::vector<std::tuple<double,double,double> > vertices;
-
+std::vector<glm::vec4> vertices;
+std::vector<glm::vec4> colors;
+// std::vector<glm::vec4> a;
 //-------------------------------------------------------------------------
 
 #endif

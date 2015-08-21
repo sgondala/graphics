@@ -3,8 +3,10 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "glm/vec4.hpp"
+#include <fstream>
 #include <vector>
-#include <tuple>
+#include <string>
 
 #include <iostream>
 

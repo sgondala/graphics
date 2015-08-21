@@ -14,7 +14,7 @@ INCLUDES=gl_framework.hpp shader_util.hpp assignment.hpp
 all: $(BIN)
 
 $(BIN): $(SRCS) $(INCLUDES)
-	g++ -std=c++11 $(CPPFLAGS) $(SRCS) -o $(BIN) $(LDFLAGS) $(LIBS)
+	g++ $(CPPFLAGS) $(SRCS) -o $(BIN) $(LDFLAGS) $(LIBS)
 
 clean:
 	rm -f *~ *.o $(BIN)

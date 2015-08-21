@@ -1,11 +1,21 @@
 #include "gl_framework.hpp"
 
 extern GLfloat xrot,yrot,zrot, intTemp, mode;
-extern std::vector<std::tuple<double,double,double> > vertices;
+extern std::vector<glm::vec4> vertices;
+extern std::vector<glm::vec4> colors;
+
+int colorDecider = 0;
+
+void helperPrinter(std::ofstream& myFile, int i){
+	myFile << vertices[i].x <<" "<< vertices[i].y<< " "<<vertices[i].z<<" "
+		<< colors[i].r<< " "<<colors[i].g<< " "<<colors[i].b <<std::endl;
+	return;
+}
 
 namespace csX75
 {
 	//! Initialize GL State
+
 	void initGL(void)
 	{
 		//Set framebuffer clear color
@@ -57,6 +67,23 @@ namespace csX75
 				std::cout<<"Inspection mode on"<<std::endl;
 			}
 		}
+		else if (key == GLFW_KEY_K && action == GLFW_PRESS && mode==0){
+			std::string fileName;
+			std::cout<<"Enter file name: ";
+			std::cin>>fileName;
+			fileName += ".raw";
+			std::ofstream myFile;
+			myFile.open (fileName.c_str());
+			for(int i=1; i<vertices.size()-1; i++){
+				
+				helperPrinter(myFile, 0);
+				helperPrinter(myFile, i);
+				helperPrinter(myFile, i+1);
+			}
+			myFile.close();
+			vertices.clear();
+			colors.clear();
+		}
 	}
 
 	void mouse_callback(GLFWwindow* window, int button, int action, int mods){
@@ -64,6 +91,7 @@ namespace csX75
 			&& mode == 0){
 			if(vertices.size()>0){
 				vertices.pop_back();
+				colors.pop_back();
 				std::cout<<"Removed last vertex"<<std::endl;
 			}
 		}
@@ -74,8 +102,13 @@ namespace csX75
 			glfwGetCursorPos(window, xAddr, yAddr);
 			std::cout<<"Value of z? ";
 			std::cin>>z;
-			vertices.push_back(std::make_tuple(x,y,z));
+			vertices.push_back(glm::vec4(x,y,z,1));
 			std::cout<<"Added "<<x<<" "<<y<<" "<<z<<std::endl;
+			colors.push_back(glm::vec4(0,0,0,1));
+			colors[colors.size()-1][colorDecider] = 1;
+			colorDecider = (colorDecider+1)%3;
+			std::cout<<"Color is "<<colors[colors.size()-1].x<<" "<<colors[colors.size()-1].y
+			<<" "<<colors[colors.size()-1].z<<std::endl;
 		}
 	}
 };  
