@@ -14,7 +14,6 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include <vector>
-// #include <tuple>
 
 // Translation Parameters
 GLfloat xpos=0.0,ypos=0.0,zpos=0.0;

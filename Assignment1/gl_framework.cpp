@@ -69,7 +69,7 @@ namespace csX75
 		}
 		else if (key == GLFW_KEY_K && action == GLFW_PRESS && mode==0){
 			std::string fileName;
-			std::cout<<"Enter file name: ";
+			std::cout<<"Enter file name (Do not append .raw): ";
 			std::cin>>fileName;
 			fileName += ".raw";
 			std::ofstream myFile;
@@ -83,6 +83,44 @@ namespace csX75
 			myFile.close();
 			vertices.clear();
 			colors.clear();
+		}
+		else if (key == GLFW_KEY_L && action == GLFW_PRESS && mode==0){
+			std::string fileName, line;
+			std::cout<<"Enter file name (Do not append .raw): ";
+			std::cin>>fileName;
+			vertices.clear();
+			colors.clear();
+			fileName += ".raw";
+			std::ifstream myFile(fileName.c_str());
+			int lineNo = 0;
+			if(myFile.is_open()){
+				std::vector<double> probablyLast;
+				while (getline(myFile,line)){
+					std::vector<double> inputFromFile;
+					while(line.find(' ')!=std::string::npos){
+						int temp  = line.find(' ');
+						std::string value = line.substr(0, temp);
+						inputFromFile.push_back(atof(value.c_str()));
+						line = line.substr(temp+1);
+					}
+					inputFromFile.push_back(atof(line.c_str()));
+					if(lineNo==0 || lineNo%3==1){
+						vertices.push_back(
+							glm::vec4(inputFromFile[0],inputFromFile[1],inputFromFile[2],1));
+						colors.push_back(
+							glm::vec4(inputFromFile[3],inputFromFile[4],inputFromFile[5],1));
+					}
+					if(lineNo%3==2){
+						probablyLast = inputFromFile;
+					}
+					lineNo++;
+				}
+				vertices.push_back(
+					glm::vec4(probablyLast[0], probablyLast[1], probablyLast[2], 1));
+				colors.push_back(
+					glm::vec4(probablyLast[3], probablyLast[4], probablyLast[5], 1));
+				myFile.close();
+			}
 		}
 	}
 
