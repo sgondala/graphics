@@ -1,12 +1,3 @@
-/*
-  A program which opens a window and draws the "color cube."
-
-  Use the arrow keys and PgUp,PgDn, 
-  keys to make the cube move.
-
-  Written by - 
-               Parag Chaudhuri
-*/
 #ifndef _COLORCUBE_HPP_
 #define _COLORCUBE_HPP_
 
@@ -22,6 +13,7 @@
 #include "glm/mat4x4.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
+#include <vector>
 
 // Translation Parameters
 GLfloat xpos=0.0,ypos=0.0,zpos=0.0;
@@ -32,6 +24,15 @@ GLfloat xrot=0.0,yrot=0.0,zrot=0.0;
 bool enable_culling=true;
 //Running variable to toggle wireframe/solid modelling
 bool solid=true;
+
+// Modelling/Viewing mode - 0 for modelling, 1 for viewing
+int mode = 0;
+
+//Debugging thing
+int intTemp = 0;
+
+//Vertices
+std::vector<std::pair<int,int> > vertices;
 
 //-------------------------------------------------------------------------
 

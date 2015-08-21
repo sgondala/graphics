@@ -53,6 +53,7 @@ int main(int argc, char** argv)
 
 	//Keyboard Callback
 	glfwSetKeyCallback(window, csX75::key_callback);
+	glfwSetMouseButtonCallback(window, csX75::mouse_callback);
 	//Framebuffer resize callback
 	glfwSetFramebufferSizeCallback(window, csX75::framebuffer_size_callback);
 
@@ -78,6 +79,7 @@ int main(int argc, char** argv)
 		}
 	
 	glfwTerminate();
+	std:: cout<< intTemp << std::endl;
 	return 0;
 }
 
