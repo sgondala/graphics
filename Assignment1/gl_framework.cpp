@@ -1,7 +1,7 @@
 #include "gl_framework.hpp"
 
 extern GLfloat xrot,yrot,zrot, intTemp, mode;
-extern std::vector<std::pair<double,double> > vertices;
+extern std::vector<std::tuple<double,double,double> > vertices;
 
 namespace csX75
 {
@@ -68,12 +68,14 @@ namespace csX75
 			}
 		}
 		else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && mode == 0){
-			double x,y;
+			double x,y,z;
 			double *xAddr; double *yAddr;
 			xAddr = &x; yAddr = &y;
 			glfwGetCursorPos(window, xAddr, yAddr);
-			vertices.push_back(std::make_pair(x,y));
-			std::cout<<"Added "<<x<<" "<<y<<std::endl;
+			std::cout<<"Value of z? ";
+			std::cin>>z;
+			vertices.push_back(std::make_tuple(x,y,z));
+			std::cout<<"Added "<<x<<" "<<y<<" "<<z<<std::endl;
 		}
 	}
 };  
