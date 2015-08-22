@@ -135,7 +135,8 @@ namespace csX75
       std::cout<<"Value of z (Between -1 and 1)? ";
       std::cin>>z;
       x = x/256 -1;
-      y = y/256 -1;
+      y = -y/256 +1;
+      // y *= -1;
       vertices[vertexNo] = glm::vec4(x,y,z,1); 
       // vertices.push_back(glm::vec4(x,y,z,1));
       std::cout<<"Added "<<x<<" "<<y<<" "<<z<<std::endl;
