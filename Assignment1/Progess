@@ -1,5 +1,11 @@
 Implemented - 
-2,3,4 
+Saving, retriving, drawing, adding coordinates - Everything done
+
+To do - 
+Transformations, 3 models generation
+
+Bugs - 
+Clicking not taking correct coordinates, Should check conventions
 
 Doubts - 
 

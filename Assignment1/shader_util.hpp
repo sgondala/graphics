@@ -12,9 +12,9 @@
 
 namespace csX75
 {
-	GLuint LoadShaderGL(GLenum eShaderType, const std::string &strFilename);
-	GLuint CreateShaderGL(GLenum eShaderType, const std::string &strShaderFile);
-	GLuint CreateProgramGL(const std::vector<GLuint> &shaderList);
+  GLuint LoadShaderGL(GLenum eShaderType, const std::string &strFilename);
+  GLuint CreateShaderGL(GLenum eShaderType, const std::string &strShaderFile);
+  GLuint CreateProgramGL(const std::vector<GLuint> &shaderList);
 };
 
 #endif

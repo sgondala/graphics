@@ -1,12 +1,11 @@
-#version 440
+#version 400
 
-in vec4 vPosition;
-in vec4 vColor;
+layout(location = 0) in vec4 vPosition;
+layout(location = 1) in vec4 vColor;
 out vec4 color;
-uniform mat4 uModelViewMatrix;
 
-void main (void) 
+void main () 
 {
-  gl_Position = uModelViewMatrix * vPosition;
+  gl_Position = vPosition;
   color = vColor;
 }
