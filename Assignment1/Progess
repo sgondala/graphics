@@ -1,11 +1,12 @@
 Implemented - 
 Saving, retriving, drawing, adding coordinates - Everything done
+Translations - Done
 
 To do - 
-Transformations, 3 models generation
+Rotations, 3 models generation
 
 Bugs - 
-
+Z non zero - Some problem - Should fix it
 
 Doubts - 
 

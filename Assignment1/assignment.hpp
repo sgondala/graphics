@@ -26,9 +26,11 @@
 #include <vector>
 
 
-int mode = 0;
+int mode = 0; //1 for inspection mode
 glm::vec4 vertices[100];
 glm::vec4 colors[100];
 int vertexNo = 0;
+
+GLfloat xTrans = 0.0, yTrans = 0.0, zTrans = 0.0;
 
 #endif
