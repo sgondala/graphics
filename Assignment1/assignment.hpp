@@ -32,5 +32,6 @@ glm::vec4 colors[100];
 int vertexNo = 0;
 
 GLfloat xTrans = 0.0, yTrans = 0.0, zTrans = 0.0;
-
+GLfloat xrot=0.0,yrot=0.0,zrot=0.0;
+int terminalInput = 1;
 #endif

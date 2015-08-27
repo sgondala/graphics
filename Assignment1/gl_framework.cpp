@@ -3,8 +3,8 @@
 extern glm::vec4 vertices[100];
 extern glm::vec4 colors[100];
 extern int vertexNo, mode;
-extern GLfloat xTrans, yTrans, zTrans;
-int colorDecider = 0;
+extern GLfloat xTrans, yTrans, zTrans, xrot, yrot, zrot;
+extern int terminalInput;
 
 void helperPrinter(std::ofstream& myFile, int i){
 	myFile << vertices[i].x <<" "<< vertices[i].y<< " "<<vertices[i].z<<" "
@@ -66,26 +66,28 @@ namespace csX75
 				std::cout<<"Inspection mode on"<<std::endl;
 			}
 		}
-		else if (key == GLFW_KEY_K && action == GLFW_PRESS && mode==0){
+		else if (key == GLFW_KEY_K && action == GLFW_PRESS){
 			std::string fileName;
+			terminalInput = 0;
 			std::cout<<"Enter file name (Do not append .raw): ";
 			std::cin>>fileName;
+			terminalInput = 1;
 			fileName += ".raw";
 			std::ofstream myFile;
 			myFile.open (fileName.c_str());
-			for(int i=1; i<vertexNo; i++){
-				helperPrinter(myFile, 0);
-				helperPrinter(myFile, i);
-				helperPrinter(myFile, i+1);
+			for(int i=0; i<vertexNo; i++){
+				helperPrinter(myFile, i);	//<-assumption used that the structure is a triangle fan
 			}
 			myFile.close();
-			vertexNo = 0;
-			xTrans = yTrans = zTrans = 0.0;
+			//vertexNo = 0;						//	<== are these necessary
+			//xTrans = yTrans = zTrans = 0.0;		//
 		}
-		else if (key == GLFW_KEY_L && action == GLFW_PRESS && mode==0){
+		else if (key == GLFW_KEY_L && action == GLFW_PRESS){
 			std::string fileName, line;
+			terminalInput = 0;
 			std::cout<<"Enter file name (Do not append .raw): ";
 			std::cin>>fileName;
+			terminalInput = 1;
 			vertexNo = 0;
 			fileName += ".raw";
 			std::ifstream myFile(fileName.c_str());
@@ -101,19 +103,11 @@ namespace csX75
 						line = line.substr(temp+1);
 					}
 					inputFromFile.push_back(atof(line.c_str()));
-					if(lineNo==0 || lineNo%3==1){
-						vertices[vertexNo] = glm::vec4(inputFromFile[0],inputFromFile[1],inputFromFile[2],1);
-						colors[vertexNo] = glm::vec4(inputFromFile[3],inputFromFile[4],inputFromFile[5],1);
-						vertexNo++; 
-					}
-					if(lineNo%3==2){
-						probablyLast = inputFromFile;
-					}
+					vertices[vertexNo] = glm::vec4(inputFromFile[0],inputFromFile[1],inputFromFile[2],1);
+					colors[vertexNo] = glm::vec4(inputFromFile[3],inputFromFile[4],inputFromFile[5],1);
+					vertexNo++;
 					lineNo++;
 				}
-				vertices[vertexNo] = glm::vec4(probablyLast[0], probablyLast[1], probablyLast[2], 1);
-				colors[vertexNo] = glm::vec4(probablyLast[3], probablyLast[4], probablyLast[5], 1);
-				vertexNo++;
 				myFile.close();
 			}
 		}
@@ -147,24 +141,53 @@ namespace csX75
 		else if (key == GLFW_KEY_X && action == GLFW_PRESS && mode==1){
 			zTrans -= 0.1;
 		}
+		else if(key == GLFW_KEY_LEFT && action == GLFW_PRESS && mode == 1){
+			yrot -= 0.1;
+		}
+		else if(key == GLFW_KEY_RIGHT && action == GLFW_PRESS && mode == 1){
+			yrot += 0.1;
+		}
+		else if(key == GLFW_KEY_UP && action == GLFW_PRESS && mode == 1){
+			xrot += 0.1;
+		}
+		else if(key == GLFW_KEY_DOWN && action == GLFW_PRESS && mode == 1){
+			xrot -= 0.1;
+		}
+		else if(key == GLFW_KEY_PAGE_UP && action == GLFW_PRESS && mode == 1){
+			zrot += 0.1;
+		}
+		else if(key == GLFW_KEY_PAGE_DOWN && action == GLFW_PRESS && mode == 1){
+			zrot -= 0.1;
+		}
 
 	}
 
 	void mouse_callback(GLFWwindow* window, int button, int action, int mods){
+		double x,y,z;
+		double *xAddr; double *yAddr;
+		xAddr = &x; yAddr = &y;
+		double R,G,B;
 		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && mods == GLFW_MOD_SHIFT
 			&& mode == 0){
 			if(vertexNo>0){
 				vertexNo--;
 				std::cout<<"Removed last vertex"<<std::endl;
 			}
-		}    
-		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && mode==0){
-			double x,y,z;
-			double *xAddr; double *yAddr;
-			xAddr = &x; yAddr = &y;
+		}
+		else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && mode==0){
 			glfwGetCursorPos(window, xAddr, yAddr);
 			std::cout<<"Value of z (Between -1 and 1)? ";
+			terminalInput = 0;
 			std::cin>>z;
+			std::cout << "Colors in R:G:B format" << std::endl;
+			std::cout << "R?\t";
+			std::cin >> R;
+			std::cout << "G?\t";
+			std::cin >> G;
+			std::cout << "B?\t";
+			std::cin >> B;
+			
+			terminalInput = 1;
 			x = x/256 -1;
 			y = -y/256 +1;
 			// y *= -1;
@@ -174,8 +197,9 @@ namespace csX75
 			colors[vertexNo] = glm::vec4(0,0,0,1); 
 			// colors.push_back(glm::vec4(0,0,0,1));
 			vertexNo++;
-			colors[vertexNo-1][colorDecider] = 1;
-			colorDecider = (colorDecider+1)%3;
+			colors[vertexNo-1][0] = R;
+			colors[vertexNo-1][1] = G;
+			colors[vertexNo-1][2] = B;
 			std::cout<<"Color is "<<colors[vertexNo-1].x<<" "<<colors[vertexNo-1].y
 			<<" "<<colors[vertexNo-1].z<<std::endl;
 		}    
