@@ -5,12 +5,7 @@ extern glm::vec4 colors[100];
 extern int vertexNo, mode;
 extern GLfloat xTrans, yTrans, zTrans, xrot, yrot, zrot;
 extern int terminalInput;
-
-void helperPrinter(std::ofstream& myFile, int i){
-	myFile << vertices[i].x <<" "<< vertices[i].y<< " "<<vertices[i].z<<" "
-		<< colors[i].r<< " "<<colors[i].g<< " "<<colors[i].b <<std::endl;
-	return;
-}
+extern int rotationCase;
 
 namespace csX75
 {
@@ -76,9 +71,11 @@ namespace csX75
 			std::ofstream myFile;
 			myFile.open (fileName.c_str());
 			for(int i=0; i<vertexNo; i++){
-				helperPrinter(myFile, i);	//<-assumption used that the structure is a triangle fan
+				myFile << vertices[i].x <<" "<< vertices[i].y<< " "<< vertices[i].z<<" "
+			<< colors[i].r<< " "<<colors[i].g<< " "<<colors[i].b <<std::endl;
 			}
 			myFile.close();
+			std::cout << "File saved as " << fileName << std::endl; 
 			//vertexNo = 0;						//	<== are these necessary
 			//xTrans = yTrans = zTrans = 0.0;		//
 		}
@@ -109,6 +106,7 @@ namespace csX75
 					lineNo++;
 				}
 				myFile.close();
+				std::cout << "Loaded file " << fileName << std::endl; 
 			}
 		}
 		else if (key == GLFW_KEY_R && action == GLFW_PRESS && mode==1){
@@ -124,44 +122,52 @@ namespace csX75
 			std::cout<<xTrans<<" "<<yTrans<<" "<<zTrans<<std::endl;
 		}
 		else if (key == GLFW_KEY_W && action == GLFW_PRESS && mode==1){
-			yTrans += 0.1;
+			yTrans = 0.1;
 		}
 		else if (key == GLFW_KEY_S && action == GLFW_PRESS && mode==1){
-			yTrans -= 0.1;
+			yTrans = -0.1;
 		}
 		else if (key == GLFW_KEY_A && action == GLFW_PRESS && mode==1){
-			xTrans += 0.1;
+			xTrans = -0.1;
 		}
 		else if (key == GLFW_KEY_D && action == GLFW_PRESS && mode==1){
-			xTrans -= 0.1;
+			xTrans = 0.1;
 		}
 		else if (key == GLFW_KEY_Z && action == GLFW_PRESS && mode==1){
-			zTrans += 0.1;
+			zTrans = 0.1;
 		}
 		else if (key == GLFW_KEY_X && action == GLFW_PRESS && mode==1){
-			zTrans -= 0.1;
+			zTrans = -0.1;
 		}
 		else if(key == GLFW_KEY_LEFT && action == GLFW_PRESS && mode == 1){
-			yrot -= 0.1;
+			yrot = -0.1;
+			rotationCase = 1;
 		}
 		else if(key == GLFW_KEY_RIGHT && action == GLFW_PRESS && mode == 1){
-			yrot += 0.1;
+			yrot = 0.1;
+			rotationCase = 1;
 		}
 		else if(key == GLFW_KEY_UP && action == GLFW_PRESS && mode == 1){
-			xrot += 0.1;
+			xrot = 0.1;
+			rotationCase = 1;
 		}
 		else if(key == GLFW_KEY_DOWN && action == GLFW_PRESS && mode == 1){
-			xrot -= 0.1;
+			xrot = -0.1;
+			rotationCase = 1;
 		}
 		else if(key == GLFW_KEY_PAGE_UP && action == GLFW_PRESS && mode == 1){
-			zrot += 0.1;
+			zrot = 0.1;
+			rotationCase = 1;
 		}
 		else if(key == GLFW_KEY_PAGE_DOWN && action == GLFW_PRESS && mode == 1){
-			zrot -= 0.1;
+			zrot = -0.1;
+			rotationCase = 1;
 		}
 
 	}
-
+	double xydistance(glm::vec4 a, glm::vec4 b){
+		return (a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y);
+	}
 	void mouse_callback(GLFWwindow* window, int button, int action, int mods){
 		double x,y,z;
 		double *xAddr; double *yAddr;
@@ -176,32 +182,57 @@ namespace csX75
 		}
 		else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && mode==0){
 			glfwGetCursorPos(window, xAddr, yAddr);
-			std::cout<<"Value of z (Between -1 and 1)? ";
 			terminalInput = 0;
-			std::cin>>z;
-			std::cout << "Colors in R:G:B format" << std::endl;
-			std::cout << "R?\t";
-			std::cin >> R;
-			std::cout << "G?\t";
-			std::cin >> G;
-			std::cout << "B?\t";
-			std::cin >> B;
-			
-			terminalInput = 1;
-			x = x/256 -1;
-			y = -y/256 +1;
-			// y *= -1;
-			vertices[vertexNo] = glm::vec4(x - xTrans, y - yTrans, z - zTrans, 1); 
-			// vertices.push_back(glm::vec4(x,y,z,1));
-			std::cout<<"Added "<<x<<" "<<y<<" "<<z<<std::endl;
-			colors[vertexNo] = glm::vec4(0,0,0,1); 
-			// colors.push_back(glm::vec4(0,0,0,1));
-			vertexNo++;
-			colors[vertexNo-1][0] = R;
-			colors[vertexNo-1][1] = G;
-			colors[vertexNo-1][2] = B;
-			std::cout<<"Color is "<<colors[vertexNo-1].x<<" "<<colors[vertexNo-1].y
-			<<" "<<colors[vertexNo-1].z<<std::endl;
+			std::string response;
+			if(vertexNo >=3){
+				std::cout << "merge with existing vertex? (y or n)" << std::endl;
+				std::cin >> response;
+			} 
+			if(vertexNo < 3 || (vertexNo >= 3 && (response == "n" || response == "no" || response == "NO"))){
+				std::cout<<"Value of z (Between -1 and 1)? ";
+				terminalInput = 0;
+				std::cin>>z;
+				std::cout << "Colors in R:G:B format" << std::endl;
+				std::cout << "R?\t";
+				std::cin >> R;
+				std::cout << "G?\t";
+				std::cin >> G;
+				std::cout << "B?\t";
+				std::cin >> B;
+				
+				terminalInput = 1;
+				x = x/256 -1;
+				y = -y/256 +1;
+				// y *= -1;
+				vertices[vertexNo] = glm::vec4(x, y, z , 1); 
+				// vertices.push_back(glm::vec4(x,y,z,1));
+				std::cout<<"Added "<<x<<" "<<y<<" "<<z<<std::endl;
+				colors[vertexNo] = glm::vec4(0,0,0,1); 
+				// colors.push_back(glm::vec4(0,0,0,1));
+				vertexNo++;
+				colors[vertexNo-1][0] = R;
+				colors[vertexNo-1][1] = G;
+				colors[vertexNo-1][2] = B;
+				std::cout<<"Color is "<<colors[vertexNo-1].x<<" "<<colors[vertexNo-1].y
+				<<" "<<colors[vertexNo-1].z<<std::endl;
+			}
+			else{
+				x = x/256 -1;
+				y = -y/256 +1;
+				std::cout << "Entered the nearest neighbour" <<  std::endl;
+				glm::vec4 tempVertex = glm::vec4(x,y,0,1);
+				int minIndex = 0;
+				double minVal = xydistance(vertices[0],tempVertex);
+				for(int i=1;i<(vertexNo/3)*3;i++){
+					if(xydistance(vertices[i],tempVertex) < minVal){
+						minIndex = i;
+						minVal = xydistance(vertices[i],tempVertex);
+					}
+				}
+				vertexNo++;
+				vertices[vertexNo-1] = vertices[minIndex];
+				colors[vertexNo-1] = colors[minIndex];
+			}	
 		}    
 	}
 };

@@ -46,27 +46,45 @@ void renderGL(){
 
 
 	uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
-	
-	translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xTrans, yTrans, zTrans));
-	rotationMatrix = glm::rotate(glm::mat4(1.0f), xrot, glm::vec3(1.0f,0.0f,0.0f));
-	rotationMatrix = glm::rotate(rotationMatrix, yrot, glm::vec3(0.0f,1.0f,0.0f));
-	rotationMatrix = glm::rotate(rotationMatrix, zrot, glm::vec3(0.0f,0.0f,1.0f));
- 
-	modelviewMatrix = rotationMatrix * translationMatrix;
+	if(rotationCase == 1){
+		GLfloat xTransTemp = 0.0, yTransTemp = 0.0, zTransTemp = 0.0; 
+		for(int i=0; i<vertexNo; i++){
+			xTransTemp += vertices[i].x;
+			yTransTemp += vertices[i].y;
+			zTransTemp += vertices[i].z;
+		}
+		xTransTemp = -xTransTemp/vertexNo;
+		yTransTemp = -yTransTemp/vertexNo;
+		zTransTemp = -zTransTemp/vertexNo;
+		
+		translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xTransTemp, yTransTemp, zTransTemp));
+		rotationMatrix = glm::rotate(glm::mat4(1.0f), xrot, glm::vec3(1.0f,0.0f,0.0f));
+		rotationMatrix = glm::rotate(rotationMatrix, yrot, glm::vec3(0.0f,1.0f,0.0f));
+		rotationMatrix = glm::rotate(rotationMatrix, zrot, glm::vec3(0.0f,0.0f,1.0f));
+		
+		modelviewMatrix = rotationMatrix * translationMatrix;
 
+		translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-xTransTemp, -yTransTemp, -zTransTemp));
+		modelviewMatrix = translationMatrix * modelviewMatrix;
+
+		rotationCase = 0;
+	}
+	else{
+		translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xTrans, yTrans, zTrans));
+		modelviewMatrix = translationMatrix;
+	}
 	glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelviewMatrix));
-	
+	glDrawArrays(GL_TRIANGLES, 0, vertexNo);
 	for(int i=0;i<vertexNo;i++){
 		vertices[i] = modelviewMatrix*vertices[i];
 	}
-
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, vertexNo); //<-shouldn't this be a traingle strip. a little difficult to form models with a fan perhaps?
 	xTrans = 0;
 	yTrans = 0;
 	zTrans = 0;
 	xrot = 0;
 	yrot = 0;
 	zrot = 0;
+	
 }
 
 
