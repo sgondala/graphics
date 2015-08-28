@@ -7,7 +7,7 @@ GLuint verticesVbo, colorsVbo;
 GLuint uModelViewMatrix;
 
 glm::mat4 translationMatrix, rotationMatrix;
-glm::mat4 modelviewMatrix,ortho_matrix;
+glm::mat4 modelviewMatrix,orthoMatrix;
 
 void initBuffersGL(){
 	// testing();
@@ -46,6 +46,7 @@ void renderGL(){
 
 
 	uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
+
 	if(rotationCase == 1){
 		GLfloat xTransTemp = 0.0, yTransTemp = 0.0, zTransTemp = 0.0; 
 		for(int i=0; i<vertexNo; i++){
@@ -61,7 +62,6 @@ void renderGL(){
 		rotationMatrix = glm::rotate(glm::mat4(1.0f), xrot, glm::vec3(1.0f,0.0f,0.0f));
 		rotationMatrix = glm::rotate(rotationMatrix, yrot, glm::vec3(0.0f,1.0f,0.0f));
 		rotationMatrix = glm::rotate(rotationMatrix, zrot, glm::vec3(0.0f,0.0f,1.0f));
-		
 		modelviewMatrix = rotationMatrix * translationMatrix;
 
 		translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-xTransTemp, -yTransTemp, -zTransTemp));
@@ -73,14 +73,16 @@ void renderGL(){
 		translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xTrans, yTrans, zTrans));
 		modelviewMatrix = translationMatrix;
 	}
-	ortho_matrix = glm::ortho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
-	modelviewMatrix = ortho_matrix*modelviewMatrix;
-	glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelviewMatrix));
-	glDrawArrays(GL_TRIANGLES, 0, (vertexNo/3)*3);
-	glDrawArrays(GL_POINTS,(vertexNo/3)*3,vertexNo%3);
 	for(int i=0;i<vertexNo;i++){
 		vertices[i] = modelviewMatrix*vertices[i];
 	}
+	orthoMatrix = glm::ortho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
+	modelviewMatrix = orthoMatrix*modelviewMatrix;
+
+	glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelviewMatrix));
+	glDrawArrays(GL_TRIANGLES, 0, (vertexNo/3)*3);
+	glDrawArrays(GL_POINTS,(vertexNo/3)*3,vertexNo%3);
+
 	xTrans = 0;
 	yTrans = 0;
 	zTrans = 0;
