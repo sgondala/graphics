@@ -58,14 +58,14 @@ void renderGL(){
 		yTransTemp = -yTransTemp/vertexNo;
 		zTransTemp = -zTransTemp/vertexNo;
 		
-		translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xTransTemp, yTransTemp, zTransTemp));
+	//	translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xTransTemp, yTransTemp, zTransTemp));
 		rotationMatrix = glm::rotate(glm::mat4(1.0f), xrot, glm::vec3(1.0f,0.0f,0.0f));
 		rotationMatrix = glm::rotate(rotationMatrix, yrot, glm::vec3(0.0f,1.0f,0.0f));
 		rotationMatrix = glm::rotate(rotationMatrix, zrot, glm::vec3(0.0f,0.0f,1.0f));
-		modelviewMatrix = rotationMatrix * translationMatrix;
+		modelviewMatrix = rotationMatrix ;//* translationMatrix;
 
-		translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-xTransTemp, -yTransTemp, -zTransTemp));
-		modelviewMatrix = translationMatrix * modelviewMatrix;
+	//	translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-xTransTemp, -yTransTemp, -zTransTemp));
+	//	modelviewMatrix = translationMatrix * modelviewMatrix;
 
 		rotationCase = 0;
 	}
@@ -76,7 +76,9 @@ void renderGL(){
 	for(int i=0;i<vertexNo;i++){
 		vertices[i] = modelviewMatrix*vertices[i];
 	}
-	orthoMatrix = glm::ortho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
+	double scale_factor = 2;
+	orthoMatrix = glm::ortho(-scale_factor, scale_factor, -scale_factor, scale_factor, -scale_factor, scale_factor);
+	//orthoMatrix = glm::ortho(-8.0, 8.0, -8.0, 8.0, -8.0, 8.0);
 	modelviewMatrix = orthoMatrix*modelviewMatrix;
 
 	glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelviewMatrix));

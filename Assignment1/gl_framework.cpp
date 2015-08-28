@@ -1,7 +1,7 @@
 #include "gl_framework.hpp"
 
-extern glm::vec4 vertices[100];
-extern glm::vec4 colors[100];
+extern glm::vec4 vertices[200];
+extern glm::vec4 colors[200];
 extern int vertexNo, mode;
 extern GLfloat xTrans, yTrans, zTrans, xrot, yrot, zrot;
 extern int terminalInput;
