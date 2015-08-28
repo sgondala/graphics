@@ -7,7 +7,7 @@ GLuint verticesVbo, colorsVbo;
 GLuint uModelViewMatrix;
 
 glm::mat4 translationMatrix, rotationMatrix;
-glm::mat4 modelviewMatrix;
+glm::mat4 modelviewMatrix,ortho_matrix;
 
 void initBuffersGL(){
 	// testing();
@@ -73,6 +73,8 @@ void renderGL(){
 		translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xTrans, yTrans, zTrans));
 		modelviewMatrix = translationMatrix;
 	}
+	ortho_matrix = glm::ortho(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
+	modelviewMatrix = ortho_matrix*modelviewMatrix;
 	glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelviewMatrix));
 	glDrawArrays(GL_TRIANGLES, 0, (vertexNo/3)*3);
 	glDrawArrays(GL_POINTS,(vertexNo/3)*3,vertexNo%3);
