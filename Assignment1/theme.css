@@ -1,0 +1,65 @@
+@font-face {
+	font-family: Lobster;
+	/*font-family: christ;*/
+	src:url("./Dance.ttf");
+}
+
+.mainh1 {
+	margin-top:15%;
+	font-family: Lobster;
+	font-size: 4em;
+}
+
+.nameClass{
+	font-family: Verdana;
+	font-size: 1.5em;
+}
+
+.bodyClass {
+	padding-left: 20%;
+	padding-right: 20%;
+	overflow: none;
+}
+
+.startOfDescription {
+	text-align: center;
+	font-family: Georgia;
+	font-size: 1.3em;
+}
+
+.contentClass {
+	margin-top: 5%;
+	text-align: left;
+	font-family: Georgia;
+	font-size: 1.2em;
+}
+
+.imgClass {
+/*	padding-left: 20%;
+	padding-right: 20%;*/
+	margin-top: 10%; 
+	text-align: justify;
+	/* display: inline-block; */
+}
+
+.imgClass img {
+    display: inline-block;
+    width: 200px;
+    height: 200px;
+}
+
+.imgClass:after {
+    content: ''; 
+    display: inline-block;
+    width: 100%; 
+}
+
+li {
+	margin-top: 0.6em;
+}
+
+/*li:first-child*/
+/*.contentClass ul li {
+	font-family: Georgia;
+	font-size: 1.2em;
+}*/
