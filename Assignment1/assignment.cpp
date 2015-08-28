@@ -74,7 +74,8 @@ void renderGL(){
 		modelviewMatrix = translationMatrix;
 	}
 	glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelviewMatrix));
-	glDrawArrays(GL_TRIANGLES, 0, vertexNo);
+	glDrawArrays(GL_TRIANGLES, 0, (vertexNo/3)*3);
+	glDrawArrays(GL_POINTS,(vertexNo/3)*3,vertexNo%3);
 	for(int i=0;i<vertexNo;i++){
 		vertices[i] = modelviewMatrix*vertices[i];
 	}

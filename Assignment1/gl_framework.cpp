@@ -176,8 +176,8 @@ namespace csX75
 		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && mods == GLFW_MOD_SHIFT
 			&& mode == 0){
 			if(vertexNo>0){
+				std::cout<<"Removed last vertex : ("<<vertices[vertexNo-1].x << "," << vertices[vertexNo-1].y << " " << vertices[vertexNo-1].z << ")" << std::endl;
 				vertexNo--;
-				std::cout<<"Removed last vertex"<<std::endl;
 			}
 		}
 		else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && mode==0){
@@ -185,7 +185,7 @@ namespace csX75
 			terminalInput = 0;
 			std::string response;
 			if(vertexNo >=3){
-				std::cout << "merge with existing vertex? (y or n)" << std::endl;
+				std::cout << "Merge with nearest neighbor vertex? (y or n)" << std::endl;
 				std::cin >> response;
 			} 
 			if(vertexNo < 3 || (vertexNo >= 3 && (response == "n" || response == "no" || response == "NO"))){
@@ -206,7 +206,7 @@ namespace csX75
 				// y *= -1;
 				vertices[vertexNo] = glm::vec4(x, y, z , 1); 
 				// vertices.push_back(glm::vec4(x,y,z,1));
-				std::cout<<"Added "<<x<<" "<<y<<" "<<z<<std::endl;
+				std::cout<<"Added vertex: ("<<x<<","<<y<<","<<z<<")" <<std::endl;
 				colors[vertexNo] = glm::vec4(0,0,0,1); 
 				// colors.push_back(glm::vec4(0,0,0,1));
 				vertexNo++;
@@ -219,7 +219,7 @@ namespace csX75
 			else{
 				x = x/256 -1;
 				y = -y/256 +1;
-				std::cout << "Entered the nearest neighbour" <<  std::endl;
+				std::cout << "Nearest neighbour is chosen" <<  std::endl;
 				glm::vec4 tempVertex = glm::vec4(x,y,0,1);
 				int minIndex = 0;
 				double minVal = xydistance(vertices[0],tempVertex);
