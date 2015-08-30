@@ -1,6 +1,5 @@
 @font-face {
 	font-family: Lobster;
-	/*font-family: christ;*/
 	src:url("./Dance.ttf");
 }
 
@@ -35,14 +34,12 @@
 }
 
 .imgClass {
-/*	padding-left: 20%;
-	padding-right: 20%;*/
 	margin-top: 10%; 
 	text-align: justify;
-	/* display: inline-block; */
 }
 
 .imgClass img {
+	background-color: black;
     display: inline-block;
     width: 200px;
     height: 200px;
@@ -58,8 +55,14 @@ li {
 	margin-top: 0.6em;
 }
 
-/*li:first-child*/
-/*.contentClass ul li {
-	font-family: Georgia;
-	font-size: 1.2em;
-}*/
+#spectaclesImage:hover{
+	content: url('Images/spectacles.gif');
+}
+
+#windMillImage:hover{
+	content: url('Images/windMill.gif');
+}
+
+#paperPlaneImage:hover{
+	content: url('Images/paperPlane.gif');
+}
