@@ -5,7 +5,7 @@ extern glm::vec4 colors[200];
 extern int vertexNo;
 extern GLfloat xTrans, yTrans, zTrans, xrot, yrot, zrot;
 extern int terminalInput;
-extern bool choosenVCS;
+extern bool choosenVCS, choosenCCS;
 
 namespace csX75
 {
@@ -117,6 +117,9 @@ namespace csX75
 		}
 		else if(key == GLFW_KEY_1 && action == GLFW_PRESS){
 			choosenVCS = true;
+		}
+		else if(key == GLFW_KEY_2 && action == GLFW_PRESS){
+			choosenCCS = true;
 		}
 
 	}

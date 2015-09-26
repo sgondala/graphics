@@ -46,4 +46,5 @@ GLfloat xrot=0.0,yrot=0.0,zrot=0.0;
 int terminalInput = 1;
 int rotationCase = 0;
 bool choosenVCS = false;
+bool choosenCCS = false;
 #endif
