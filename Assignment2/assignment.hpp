@@ -48,4 +48,5 @@ int rotationCase = 0;
 bool choosenVCS = false;
 bool choosenCCS = false;
 bool choosenNDCS = false;
+bool choosenDCS = false;
 #endif

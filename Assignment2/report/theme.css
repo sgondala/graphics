@@ -41,8 +41,8 @@
 .imgClass img {
 	background-color: black;
     display: inline-block;
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
 }
 
 .imgClass:after {
@@ -53,16 +53,4 @@
 
 li {
 	margin-top: 0.6em;
-}
-
-#spectaclesImage:hover{
-	content: url('Images/spectacles.gif');
-}
-
-#windMillImage:hover{
-	content: url('Images/windMill.gif');
-}
-
-#paperPlaneImage:hover{
-	content: url('Images/paperPlane.gif');
 }

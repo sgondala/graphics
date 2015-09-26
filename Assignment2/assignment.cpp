@@ -4,13 +4,15 @@ GLuint shaderProgram;
 GLuint vao[4];
 GLuint verticesVbo[4], colorsVbo[4];
 
-GLuint uModelViewMatrix, orthoMatrix, caseNo;
+GLuint uModelViewMatrix, orthoMatrix, dcsMatrix, caseNo;
 
 GLfloat caseHere;
 
 glm::mat4 translationMatrix, rotationMatrix;
 glm::mat4 modelviewMatrix;
 glm::vec3 frustumxyz[9];
+int Rw = 10,Lw = 10;
+int Tw = 10,Bw = 10;
 
 void initBuffersGL(){
 	// testing();
@@ -26,6 +28,7 @@ void initBuffersGL(){
 
 	uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
 	orthoMatrix = glGetUniformLocation( shaderProgram, "orthoMatrix");
+	dcsMatrix = glGetUniformLocation( shaderProgram, "dcsMatrix");
 	caseNo = glGetUniformLocation( shaderProgram, "caseNo");
 
 }
@@ -307,11 +310,21 @@ void renderGL(){
 	if(choosenNDCS){
 		caseHere = 4;
 	}
+	glm::mat4 dcsMatrixHere;
+	if(choosenDCS){
+		glm::vec4 col1((Rw+Lw)/2,0,0,0);
+		glm::vec4 col2(0,(Tw+Lw)/2,0,0);
+		glm::vec4 col3(0,0,1/2,0);
+		glm::vec4 col4((Rw-Lw)/2,(Tw-Lw)/2,1/2,1);
+		dcsMatrixHere = glm::mat4(col1,col2,col3,col4);
+		caseHere = 5;
+	}
 
 	double scale_factor = 10;
 	glm::mat4 orthoMatrixHere = glm::ortho(-scale_factor, scale_factor, -scale_factor, scale_factor, -scale_factor, scale_factor);
 
 	glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelviewMatrix));
+	glUniformMatrix4fv(dcsMatrix, 1, GL_FALSE, glm::value_ptr(dcsMatrixHere));
 	glUniformMatrix4fv(orthoMatrix, 1, GL_FALSE, glm::value_ptr(orthoMatrixHere));
 	glUniform1f(caseNo, caseHere);
 
