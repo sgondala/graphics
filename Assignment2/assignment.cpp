@@ -8,6 +8,7 @@ GLuint uModelViewMatrix;
 
 glm::mat4 translationMatrix, rotationMatrix;
 glm::mat4 modelviewMatrix,orthoMatrix;
+glm::vec3 frustumxyz[9];
 
 void initBuffersGL(){
 	// testing();
@@ -34,20 +35,20 @@ std::vector<double> tokenizer(std::string line, char token){
 }
 
 void frustumLine(int a, int b,int color){
-	vertexGroups[3][vertexCount[3]] = frustumxyz[a];
+	vertexGroups[3][vertexCount[3]] = glm::vec4(frustumxyz[a].x,frustumxyz[a].y,frustumxyz[a].z,1);
 	if(color == 1){
-		colorGroups[3][vertexCount[3]] = glm::vec3(1,0,1);
+		colorGroups[3][vertexCount[3]] = glm::vec4(1,0,1,1);
 	}
 	else{
-		colorGroups[3][vertexCount[3]] = glm::vec3(0,1,1);
+		colorGroups[3][vertexCount[3]] = glm::vec4(0,1,1,1);
 	}
 	vertexCount[3]++;
-	vertexGroups[3][vertexCount[3]] = frustumxyz[b];
+	vertexGroups[3][vertexCount[3]] = glm::vec4(frustumxyz[b].x,frustumxyz[b].y,frustumxyz[b].z,1);
 	if(color == 1){
-		colorGroups[3][vertexCount[3]] = glm::vec3(1,0,1);
+		colorGroups[3][vertexCount[3]] = glm::vec4(1,0,1,1);
 	}
 	else{
-		colorGroups[3][vertexCount[3]] = glm::vec3(0,1,1);
+		colorGroups[3][vertexCount[3]] = glm::vec4(0,1,1,1);
 	}
 	vertexCount[3]++;
 }
@@ -56,14 +57,14 @@ void frustumLine(int a, int b,int color){
 void frustumGenerator(){
 	glm::vec3 frustumabc[8];
 	float frustumL,frustumR,frustumT,frustumB,frustumN,frustumF;
-	frustumabc[0] = glm::vec4(frustumR,frustumB,frustumN,1);
-	frustumabc[1] = glm::vec4(frustumL,frustumB,frustumN,1);
-	frustumabc[2] = glm::vec4(frustumL,frustumT,frustumN,1);
-	frustumabc[3] = glm::vec4(frustumR,frustumT,frustumN,1);
-	frustumabc[4] = glm::vec4(frustumR,frustumB,frustumF,1);
-	frustumabc[5] = glm::vec4(frustumL,frustumB,frustumF,1);
-	frustumabc[6] = glm::vec4(frustumL,frustumT,frustumF,1);
-	frustumabc[7] = glm::vec4(frustumR,frustumT,frustumF,1);
+	frustumabc[0] = glm::vec3(frustumR,frustumB,frustumN);
+	frustumabc[1] = glm::vec3(frustumL,frustumB,frustumN);
+	frustumabc[2] = glm::vec3(frustumL,frustumT,frustumN);
+	frustumabc[3] = glm::vec3(frustumR,frustumT,frustumN);
+	frustumabc[4] = glm::vec3(frustumR,frustumB,frustumF);
+	frustumabc[5] = glm::vec3(frustumL,frustumB,frustumF);
+	frustumabc[6] = glm::vec3(frustumL,frustumT,frustumF);
+	frustumabc[7] = glm::vec3(frustumR,frustumT,frustumF);
 	glm::vec3 eye,lookat,up;
 	glm::vec3 n = -(lookat-eye)/glm::distance(lookat,eye);
 	glm::vec3 u = glm::cross(up,n)/glm::distance(up,n);
@@ -103,6 +104,7 @@ void loadRawImage(std::string fileName, int indexInArray, glm::vec3 scale,
 	if(myFile.is_open()){
 		while (getline(myFile,line)){
 			std::vector<double> inputFromFile = tokenizer(line,' ');
+
 			bodyCenter.x += inputFromFile[0];
 			bodyCenter.y += inputFromFile[1];
 			bodyCenter.z += inputFromFile[2];
@@ -110,7 +112,13 @@ void loadRawImage(std::string fileName, int indexInArray, glm::vec3 scale,
 				glm::vec4(inputFromFile[0],inputFromFile[1],inputFromFile[2],1);
 			colorGroups[indexInArray][vertexCount[indexInArray]] = 
 				glm::vec4(inputFromFile[3],inputFromFile[4],inputFromFile[5],1);
-			vertexCount[indexInArray]++;
+				if(indexInArray==2){
+					std::cout<<inputFromFile[5];
+					// std::cout<< colorGroups[indexInArray][vertexCount[indexInArray]].x << " " <<
+					// colorGroups[indexInArray][vertexCount[indexInArray]].y << " " <<
+					// colorGroups[indexInArray][vertexCount[indexInArray]].z << std::endl;
+				}
+				vertexCount[indexInArray]++;
 		}
 		myFile.close();
 	}
@@ -134,7 +142,7 @@ void loadRawImage(std::string fileName, int indexInArray, glm::vec3 scale,
 	for(int i=0; i<vertexCount[indexInArray]; i++){
 		vertexGroups[indexInArray][i] = finalMat*vertexGroups[indexInArray][i];
 	}
-	frustumGenerator();
+
 }
 
 void equate(glm::vec3 &a, std::vector<double> v){
@@ -196,6 +204,7 @@ void loadScene(){
 		}
 		myFile.close();
 	}
+	frustumGenerator();
 
 }
 
@@ -206,8 +215,8 @@ void renderHelper(int i){
 	glGenBuffers (1, &colorsVbo);
 	glBindBuffer (GL_ARRAY_BUFFER, colorsVbo);
 	glBufferData (GL_ARRAY_BUFFER, sizeof(colorGroups[i][0]) * vertexCount[i], colorGroups[i], GL_STATIC_DRAW);
-	glGenVertexArrays (1, &vao1);
-	glBindVertexArray (vao1);
+	glGenVertexArrays (1, &vao);
+	glBindVertexArray (vao);
 	glBindBuffer(GL_ARRAY_BUFFER, verticesVbo);
 	glVertexAttribPointer(0,4,GL_FLOAT,GL_FALSE,0,NULL);
 	glBindBuffer(GL_ARRAY_BUFFER, colorsVbo);
@@ -215,16 +224,16 @@ void renderHelper(int i){
 	glEnableVertexAttribArray (0);
 	glEnableVertexAttribArray (1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glDrawArrays(GL_TRIANGLES, 0, vertexCount[i]);
+	
 }
 
 void renderGL(){
-	renderHelper(1);
 	renderHelper(2);
-	renderHelper(3);
-	renderHelper(4);
+	//renderHelper(2);
+	//renderHelper(3);
+	//renderHelper(4);
 	
-	uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
+	/*uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
 	/*GLfloat xTransTemp = 0.0, yTransTemp = 0.0, zTransTemp = 0.0; 
 	for(int i=0; i<vertexNo; i++){
 		xTransTemp += vertices[i].x;
@@ -236,7 +245,7 @@ void renderGL(){
 	zTransTemp = -zTransTemp/vertexNo;
 	*/
 	//translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xTransTemp, yTransTemp, zTransTemp));
-	rotationMatrix = glm::rotate(glm::mat4(1.0f), xrot, glm::vec3(1.0f,0.0f,0.0f));
+	/*rotationMatrix = glm::rotate(glm::mat4(1.0f), xrot, glm::vec3(1.0f,0.0f,0.0f));
 	rotationMatrix = glm::rotate(rotationMatrix, yrot, glm::vec3(0.0f,1.0f,0.0f));
 	rotationMatrix = glm::rotate(rotationMatrix, zrot, glm::vec3(0.0f,0.0f,1.0f));
 	modelviewMatrix = rotationMatrix; //* translationMatrix;
@@ -246,14 +255,13 @@ void renderGL(){
 	
 	translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xTrans, yTrans, zTrans));
 	modelviewMatrix = translationMatrix*modelviewMatrix;
-	
+	*/
 	double scale_factor = 2;
 	orthoMatrix = glm::ortho(-scale_factor, scale_factor, -scale_factor, scale_factor, -scale_factor, scale_factor);
-	modelviewMatrix = orthoMatrix*modelviewMatrix;
+	modelviewMatrix = orthoMatrix;
 
 	glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelviewMatrix));
-
-	
+	glDrawArrays(GL_TRIANGLES, 0, vertexCount[1]);
 }
 
 int main(int argc, char** argv)
@@ -317,9 +325,15 @@ int main(int argc, char** argv)
 	bool tempBool = false;
 
 	//Filling vertexGroups and colorGroups
+	std::cout << "loading scene is to happen" << std::endl;
+
 	loadScene();
-
-
+	
+	std::cout << "loading is done" << std::endl;
+	// for(int i=0;i<vertexCount[2];i++){
+	// 	std::cout << colorGroups[2][i].x << " " << colorGroups[2][i].y << " " << colorGroups[2][i].z << " " << std::endl; 
+	// }
+	std::cout << vertexCount[0] << " " << vertexCount[1] << " " << vertexCount[2] << " " << vertexCount[3] << std::endl; 
 	// Loop until the user closes the window
 	while (glfwWindowShouldClose(window) == 0)
 		{
@@ -331,6 +345,6 @@ int main(int argc, char** argv)
 		}
 	
 	glfwTerminate();
-	// std:: cout<< intTemp << std::endl;
+
 	return 0;
 }
