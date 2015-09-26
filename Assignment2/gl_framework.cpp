@@ -5,6 +5,7 @@ extern glm::vec4 colors[200];
 extern int vertexNo;
 extern GLfloat xTrans, yTrans, zTrans, xrot, yrot, zrot;
 extern int terminalInput;
+extern bool choosenVCS;
 
 namespace csX75
 {
@@ -74,6 +75,9 @@ namespace csX75
 			else{
 				std::cout << "file cannot be opened" << std::endl;
 			}
+		}
+		else if(key == GLFW_KEY_1 && action == GLFW_PRESS){
+			choosenVCS = true;
 		}
 		else if (key == GLFW_KEY_W && action == GLFW_PRESS){
 			yTrans = yTrans + 0.1;

@@ -112,6 +112,9 @@ void frustumGenerator(){
 	frustumLine(1,8,1);
 	frustumLine(2,8,1);
 	frustumLine(3,8,1);
+	vertexGroups[3][vertexCount[3]] = glm::vec4(eye,1);
+	colorGroups[3][vertexCount[3]] = glm::vec4(1,0,0,1);
+	vertexCount[3]++;
 }
 
 void loadRawImage(std::string fileName, int indexInArray, glm::vec3 scale, 
@@ -250,7 +253,11 @@ void renderHelper(int i){
 	glEnableVertexAttribArray (1);
 //	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if(i!=3) glDrawArrays(GL_TRIANGLES, 0, vertexCount[i]);	
-	else glDrawArrays(GL_LINES, 0, vertexCount[i]);	
+	else
+		{
+			glDrawArrays(GL_LINES, 0, vertexCount[i]);
+			glDrawArrays(GL_POINTS,vertexCount[i],1);
+		}
 }
 
 void renderGL(){
@@ -279,9 +286,27 @@ void renderGL(){
 	translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xTrans, yTrans, zTrans));
 	modelviewMatrix = translationMatrix*modelviewMatrix;
 	
-	double scale_factor = 10;
+	double scale_factor = 8;
 	orthoMatrix = glm::ortho(-scale_factor, scale_factor, -scale_factor, scale_factor, -scale_factor, scale_factor);
 	modelviewMatrix = orthoMatrix*modelviewMatrix;
+
+	if(choosenVCS){
+		glm::vec3 nCap = glm::normalize(eye-lookAt);
+		glm::vec3 uCap = glm::normalize(glm::cross(up,nCap));
+		glm::vec3 vCap = glm::normalize(glm::cross(nCap,uCap));	
+		glm::vec4 eBar(-dot(uCap,eye),-dot(vCap,eye),-dot(nCap,eye),1); 
+		glm::mat4 requiredMat = {{uCap.x, vCap.x, nCap.x, 0},
+								{uCap.y, vCap.y, nCap.y, 0},
+								{uCap.z, vCap.z, nCap.z, 0},
+								eBar};
+		modelviewMatrix = orthoMatrix*requiredMat;
+		xrot = 0;
+		yrot = 0;
+		zrot = 0;
+		xTrans = 0;
+		yTrans = 0;
+		zTrans = 0;	
+	}
 
 	glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelviewMatrix));
 
