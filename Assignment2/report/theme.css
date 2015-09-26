@@ -1,0 +1,68 @@
+@font-face {
+	font-family: Lobster;
+	src:url("./Dance.ttf");
+}
+
+.mainh1 {
+	margin-top:15%;
+	font-family: Lobster;
+	font-size: 4em;
+}
+
+.nameClass{
+	font-family: Verdana;
+	font-size: 1.5em;
+}
+
+.bodyClass {
+	padding-left: 20%;
+	padding-right: 20%;
+	overflow: none;
+}
+
+.startOfDescription {
+	text-align: center;
+	font-family: Georgia;
+	font-size: 1.3em;
+}
+
+.contentClass {
+	margin-top: 5%;
+	text-align: left;
+	font-family: Georgia;
+	font-size: 1.2em;
+}
+
+.imgClass {
+	margin-top: 10%; 
+	text-align: justify;
+}
+
+.imgClass img {
+	background-color: black;
+    display: inline-block;
+    width: 200px;
+    height: 200px;
+}
+
+.imgClass:after {
+    content: ''; 
+    display: inline-block;
+    width: 100%; 
+}
+
+li {
+	margin-top: 0.6em;
+}
+
+#spectaclesImage:hover{
+	content: url('Images/spectacles.gif');
+}
+
+#windMillImage:hover{
+	content: url('Images/windMill.gif');
+}
+
+#paperPlaneImage:hover{
+	content: url('Images/paperPlane.gif');
+}
