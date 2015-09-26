@@ -22,61 +22,6 @@ void initBuffersGL(){
 	glUseProgram( shaderProgram );
 }
 
-void renderGL(){
-	// std::cout<<"CAME "<<std::endl;
-	glGenBuffers (1, &verticesVbo);
-	glBindBuffer (GL_ARRAY_BUFFER, verticesVbo);
-	glBufferData (GL_ARRAY_BUFFER, sizeof(vertices[0]) * vertexNo, vertices, GL_STATIC_DRAW);
-
-	glGenBuffers (1, &colorsVbo);
-	glBindBuffer (GL_ARRAY_BUFFER, colorsVbo);
-	glBufferData (GL_ARRAY_BUFFER, sizeof(colors[0]) * vertexNo, colors, GL_STATIC_DRAW);
-
-	glGenVertexArrays (1, &vao);
-	glBindVertexArray (vao);
-	glBindBuffer(GL_ARRAY_BUFFER, verticesVbo);
-	glVertexAttribPointer(0,4,GL_FLOAT,GL_FALSE,0,NULL);
-	glBindBuffer(GL_ARRAY_BUFFER, colorsVbo);
-	glVertexAttribPointer(1,4,GL_FLOAT,GL_FALSE,0,NULL);
-
-	glEnableVertexAttribArray (0);
-	glEnableVertexAttribArray (1);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-	uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
-	GLfloat xTransTemp = 0.0, yTransTemp = 0.0, zTransTemp = 0.0; 
-	for(int i=0; i<vertexNo; i++){
-		xTransTemp += vertices[i].x;
-		yTransTemp += vertices[i].y;
-		zTransTemp += vertices[i].z;
-	}
-	xTransTemp = -xTransTemp/vertexNo;
-	yTransTemp = -yTransTemp/vertexNo;
-	zTransTemp = -zTransTemp/vertexNo;
-	
-	translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xTransTemp, yTransTemp, zTransTemp));
-	rotationMatrix = glm::rotate(glm::mat4(1.0f), xrot, glm::vec3(1.0f,0.0f,0.0f));
-	rotationMatrix = glm::rotate(rotationMatrix, yrot, glm::vec3(0.0f,1.0f,0.0f));
-	rotationMatrix = glm::rotate(rotationMatrix, zrot, glm::vec3(0.0f,0.0f,1.0f));
-	modelviewMatrix = rotationMatrix * translationMatrix;
-
-	translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-xTransTemp, -yTransTemp, -zTransTemp));
-	modelviewMatrix = translationMatrix * modelviewMatrix;
-	
-	translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xTrans, yTrans, zTrans));
-	modelviewMatrix = translationMatrix*modelviewMatrix;
-	
-	double scale_factor = 2;
-	orthoMatrix = glm::ortho(-scale_factor, scale_factor, -scale_factor, scale_factor, -scale_factor, scale_factor);
-	//orthoMatrix = glm::ortho(-8.0, 8.0, -8.0, 8.0, -8.0, 8.0);
-	modelviewMatrix = orthoMatrix*modelviewMatrix;
-
-	glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelviewMatrix));
-	glDrawArrays(GL_TRIANGLES, 0, (vertexNo/3)*3);
-	glDrawArrays(GL_POINTS,(vertexNo/3)*3,vertexNo%3);	
-}
-
 std::vector<double> tokenizer(std::string line, char token){
 	std::vector<double> inputFromFile;
 	while(line.find(token)!=std::string::npos){
@@ -86,6 +31,68 @@ std::vector<double> tokenizer(std::string line, char token){
 		line = line.substr(temp+1);
 	}
 	return inputFromFile;
+}
+
+void frustumLine(int a, int b,int color){
+	vertexGroups[3][vertexCount[3]] = frustumxyz[a];
+	if(color == 1){
+		colorGroups[3][vertexCount[3]] = glm::vec3(1,0,1);
+	}
+	else{
+		colorGroups[3][vertexCount[3]] = glm::vec3(0,1,1);
+	}
+	vertexCount[3]++;
+	vertexGroups[3][vertexCount[3]] = frustumxyz[b];
+	if(color == 1){
+		colorGroups[3][vertexCount[3]] = glm::vec3(1,0,1);
+	}
+	else{
+		colorGroups[3][vertexCount[3]] = glm::vec3(0,1,1);
+	}
+	vertexCount[3]++;
+}
+
+
+void frustumGenerator(){
+	glm::vec3 frustumabc[8];
+	float frustumL,frustumR,frustumT,frustumB,frustumN,frustumF;
+	frustumabc[0] = glm::vec4(frustumR,frustumB,frustumN,1);
+	frustumabc[1] = glm::vec4(frustumL,frustumB,frustumN,1);
+	frustumabc[2] = glm::vec4(frustumL,frustumT,frustumN,1);
+	frustumabc[3] = glm::vec4(frustumR,frustumT,frustumN,1);
+	frustumabc[4] = glm::vec4(frustumR,frustumB,frustumF,1);
+	frustumabc[5] = glm::vec4(frustumL,frustumB,frustumF,1);
+	frustumabc[6] = glm::vec4(frustumL,frustumT,frustumF,1);
+	frustumabc[7] = glm::vec4(frustumR,frustumT,frustumF,1);
+	glm::vec3 eye,lookat,up;
+	glm::vec3 n = -(lookat-eye)/glm::distance(lookat,eye);
+	glm::vec3 u = glm::cross(up,n)/glm::distance(up,n);
+	glm::vec3 v = glm::cross(n,u);
+	glm::mat3 transMatrix;
+	transMatrix[0] = u;
+	transMatrix[1] = v;
+	transMatrix[2] = n;
+	for(int i=0;i<8;i++){
+		frustumxyz[i]= transMatrix*frustumabc[i]+eye;
+	}
+	frustumxyz[8] = eye;
+	frustumLine(0,1,0);
+	frustumLine(1,2,0);
+	frustumLine(2,3,0);
+	frustumLine(3,0,0);
+	frustumLine(0,4,0);
+	frustumLine(1,5,0);
+	frustumLine(2,6,0);
+	frustumLine(3,7,0);
+	frustumLine(4,5,0);
+	frustumLine(5,6,0);
+	frustumLine(6,7,0);
+	frustumLine(7,4,0);
+
+	frustumLine(0,8,1);
+	frustumLine(1,8,1);
+	frustumLine(2,8,1);
+	frustumLine(3,8,1);
 }
 
 void loadRawImage(std::string fileName, int indexInArray, glm::vec3 scale, 
@@ -127,6 +134,7 @@ void loadRawImage(std::string fileName, int indexInArray, glm::vec3 scale,
 	for(int i=0; i<vertexCount[indexInArray]; i++){
 		vertexGroups[indexInArray][i] = finalMat*vertexGroups[indexInArray][i];
 	}
+	frustumGenerator();
 }
 
 void equate(glm::vec3 &a, std::vector<double> v){
@@ -189,6 +197,63 @@ void loadScene(){
 		myFile.close();
 	}
 
+}
+
+void renderHelper(int i){
+	glGenBuffers (1, &verticesVbo);
+	glBindBuffer (GL_ARRAY_BUFFER, verticesVbo);
+	glBufferData (GL_ARRAY_BUFFER, sizeof(vertexGroups[i][0]) * vertexCount[i], vertexGroups[i], GL_STATIC_DRAW);
+	glGenBuffers (1, &colorsVbo);
+	glBindBuffer (GL_ARRAY_BUFFER, colorsVbo);
+	glBufferData (GL_ARRAY_BUFFER, sizeof(colorGroups[i][0]) * vertexCount[i], colorGroups[i], GL_STATIC_DRAW);
+	glGenVertexArrays (1, &vao1);
+	glBindVertexArray (vao1);
+	glBindBuffer(GL_ARRAY_BUFFER, verticesVbo);
+	glVertexAttribPointer(0,4,GL_FLOAT,GL_FALSE,0,NULL);
+	glBindBuffer(GL_ARRAY_BUFFER, colorsVbo);
+	glVertexAttribPointer(1,4,GL_FLOAT,GL_FALSE,0,NULL);
+	glEnableVertexAttribArray (0);
+	glEnableVertexAttribArray (1);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glDrawArrays(GL_TRIANGLES, 0, vertexCount[i]);
+}
+
+void renderGL(){
+	renderHelper(1);
+	renderHelper(2);
+	renderHelper(3);
+	renderHelper(4);
+	
+	uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
+	/*GLfloat xTransTemp = 0.0, yTransTemp = 0.0, zTransTemp = 0.0; 
+	for(int i=0; i<vertexNo; i++){
+		xTransTemp += vertices[i].x;
+		yTransTemp += vertices[i].y;
+		zTransTemp += vertices[i].z;
+	}
+	xTransTemp = -xTransTemp/vertexNo;
+	yTransTemp = -yTransTemp/vertexNo;
+	zTransTemp = -zTransTemp/vertexNo;
+	*/
+	//translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xTransTemp, yTransTemp, zTransTemp));
+	rotationMatrix = glm::rotate(glm::mat4(1.0f), xrot, glm::vec3(1.0f,0.0f,0.0f));
+	rotationMatrix = glm::rotate(rotationMatrix, yrot, glm::vec3(0.0f,1.0f,0.0f));
+	rotationMatrix = glm::rotate(rotationMatrix, zrot, glm::vec3(0.0f,0.0f,1.0f));
+	modelviewMatrix = rotationMatrix; //* translationMatrix;
+
+	//translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-xTransTemp, -yTransTemp, -zTransTemp));
+	//modelviewMatrix = translationMatrix * modelviewMatrix;
+	
+	translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xTrans, yTrans, zTrans));
+	modelviewMatrix = translationMatrix*modelviewMatrix;
+	
+	double scale_factor = 2;
+	orthoMatrix = glm::ortho(-scale_factor, scale_factor, -scale_factor, scale_factor, -scale_factor, scale_factor);
+	modelviewMatrix = orthoMatrix*modelviewMatrix;
+
+	glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelviewMatrix));
+
+	
 }
 
 int main(int argc, char** argv)
