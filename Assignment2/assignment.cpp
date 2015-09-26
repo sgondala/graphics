@@ -46,36 +46,28 @@ void renderGL(){
 
 
 	uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
-
-	if(rotationCase == 1){
-		GLfloat xTransTemp = 0.0, yTransTemp = 0.0, zTransTemp = 0.0; 
-		for(int i=0; i<vertexNo; i++){
-			xTransTemp += vertices[i].x;
-			yTransTemp += vertices[i].y;
-			zTransTemp += vertices[i].z;
-		}
-		xTransTemp = -xTransTemp/vertexNo;
-		yTransTemp = -yTransTemp/vertexNo;
-		zTransTemp = -zTransTemp/vertexNo;
-		
-	//	translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xTransTemp, yTransTemp, zTransTemp));
-		rotationMatrix = glm::rotate(glm::mat4(1.0f), xrot, glm::vec3(1.0f,0.0f,0.0f));
-		rotationMatrix = glm::rotate(rotationMatrix, yrot, glm::vec3(0.0f,1.0f,0.0f));
-		rotationMatrix = glm::rotate(rotationMatrix, zrot, glm::vec3(0.0f,0.0f,1.0f));
-		modelviewMatrix = rotationMatrix ;//* translationMatrix;
-
-	//	translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-xTransTemp, -yTransTemp, -zTransTemp));
-	//	modelviewMatrix = translationMatrix * modelviewMatrix;
-
-		rotationCase = 0;
+	GLfloat xTransTemp = 0.0, yTransTemp = 0.0, zTransTemp = 0.0; 
+	for(int i=0; i<vertexNo; i++){
+		xTransTemp += vertices[i].x;
+		yTransTemp += vertices[i].y;
+		zTransTemp += vertices[i].z;
 	}
-	else{
-		translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xTrans, yTrans, zTrans));
-		modelviewMatrix = translationMatrix;
-	}
-	for(int i=0;i<vertexNo;i++){
-		vertices[i] = modelviewMatrix*vertices[i];
-	}
+	xTransTemp = -xTransTemp/vertexNo;
+	yTransTemp = -yTransTemp/vertexNo;
+	zTransTemp = -zTransTemp/vertexNo;
+	
+	translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xTransTemp, yTransTemp, zTransTemp));
+	rotationMatrix = glm::rotate(glm::mat4(1.0f), xrot, glm::vec3(1.0f,0.0f,0.0f));
+	rotationMatrix = glm::rotate(rotationMatrix, yrot, glm::vec3(0.0f,1.0f,0.0f));
+	rotationMatrix = glm::rotate(rotationMatrix, zrot, glm::vec3(0.0f,0.0f,1.0f));
+	modelviewMatrix = rotationMatrix * translationMatrix;
+
+	translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-xTransTemp, -yTransTemp, -zTransTemp));
+	modelviewMatrix = translationMatrix * modelviewMatrix;
+	
+	translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xTrans, yTrans, zTrans));
+	modelviewMatrix = translationMatrix*modelviewMatrix;
+	
 	double scale_factor = 2;
 	orthoMatrix = glm::ortho(-scale_factor, scale_factor, -scale_factor, scale_factor, -scale_factor, scale_factor);
 	//orthoMatrix = glm::ortho(-8.0, 8.0, -8.0, 8.0, -8.0, 8.0);
@@ -84,13 +76,6 @@ void renderGL(){
 	glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelviewMatrix));
 	glDrawArrays(GL_TRIANGLES, 0, (vertexNo/3)*3);
 	glDrawArrays(GL_POINTS,(vertexNo/3)*3,vertexNo%3);
-
-	xTrans = 0;
-	yTrans = 0;
-	zTrans = 0;
-	xrot = 0;
-	yrot = 0;
-	zrot = 0;
 	
 }
 
@@ -144,7 +129,6 @@ int main(int argc, char** argv)
 
 	//Keyboard Callback
 	glfwSetKeyCallback(window, csX75::key_callback);
-	glfwSetMouseButtonCallback(window, csX75::mouse_callback);
 	//Framebuffer resize callback
 	glfwSetFramebufferSizeCallback(window, csX75::framebuffer_size_callback);
 
