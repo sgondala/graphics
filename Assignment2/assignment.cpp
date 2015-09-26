@@ -20,7 +20,6 @@ void initBuffersGL(){
 
 	shaderProgram = csX75::CreateProgramGL(shaderList);
 	glUseProgram( shaderProgram );
-
 }
 
 void renderGL(){
@@ -75,10 +74,122 @@ void renderGL(){
 
 	glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelviewMatrix));
 	glDrawArrays(GL_TRIANGLES, 0, (vertexNo/3)*3);
-	glDrawArrays(GL_POINTS,(vertexNo/3)*3,vertexNo%3);
-	
+	glDrawArrays(GL_POINTS,(vertexNo/3)*3,vertexNo%3);	
 }
 
+std::vector<double> tokenizer(std::string line, char token){
+	std::vector<double> inputFromFile;
+	while(line.find(token)!=std::string::npos){
+		int temp  = line.find(token);
+		std::string value = line.substr(0, temp);
+		inputFromFile.push_back(atof(value.c_str()));
+		line = line.substr(temp+1);
+	}
+	return inputFromFile;
+}
+
+void loadRawImage(std::string fileName, int indexInArray, glm::vec3 scale, 
+	glm::vec3 rot, glm::vec3 trans){
+	std::ifstream myFile(fileName.c_str());
+	std::string line;
+	glm::vec3 bodyCenter(0.0,0.0,0.0);
+	if(myFile.is_open()){
+		while (getline(myFile,line)){
+			std::vector<double> inputFromFile = tokenizer(line,' ');
+			bodyCenter.x += inputFromFile[0];
+			bodyCenter.y += inputFromFile[1];
+			bodyCenter.z += inputFromFile[2];
+			vertexGroups[indexInArray][vertexCount[indexInArray]] = 
+				glm::vec4(inputFromFile[0],inputFromFile[1],inputFromFile[2],1);
+			colorGroups[indexInArray][vertexCount[indexInArray]] = 
+				glm::vec4(inputFromFile[3],inputFromFile[4],inputFromFile[5],1);
+			vertexCount[indexInArray]++;
+		}
+		myFile.close();
+	}
+	bodyCenter.x /= vertexCount[indexInArray];
+	bodyCenter.y /= vertexCount[indexInArray];
+	bodyCenter.z /= vertexCount[indexInArray];
+
+	glm::mat4 transBodyCenter, transBodyCenterNeg, transMatTemp, rotMatTemp, scaleMatRot, finalMat;
+
+	transBodyCenter = glm::translate(glm::mat4(1.0f), glm::vec3(-bodyCenter.x, -bodyCenter.y, -bodyCenter.z));
+	transBodyCenterNeg = glm::translate(glm::mat4(1.0f), glm::vec3(bodyCenter.x, bodyCenter.y, bodyCenter.z));
+	transMatTemp = glm::translate(glm::mat4(1.0f), trans);
+	// GLfloat tempXRot = (rot.x)*(3.14)/(180);
+	rotMatTemp = glm::rotate(glm::mat4(1.0f), (GLfloat) ((rot.x)*(3.14)/(180)), glm::vec3(1.0f,0.0f,0.0f));
+	rotMatTemp = glm::rotate(rotationMatrix, (GLfloat) ((rot.y)*(3.14)/(180)), glm::vec3(0.0f,1.0f,0.0f));
+	rotMatTemp = glm::rotate(rotationMatrix, (GLfloat) ((rot.z)*(3.14)/(180)), glm::vec3(0.0f,0.0f,1.0f));
+	scaleMatRot = glm::scale(glm::mat4(1.0f), scale);
+
+	finalMat = transMatTemp*transBodyCenterNeg*rotMatTemp*scaleMatRot*transBodyCenter;
+
+	for(int i=0; i<vertexCount[indexInArray]; i++){
+		vertexGroups[indexInArray][i] = finalMat*vertexGroups[indexInArray][i];
+	}
+}
+
+void equate(glm::vec3 &a, std::vector<double> v){
+	a.x = v[0];
+	a.y = v[1];
+	a.z = v[2];
+}
+
+//TODO
+void loadScene(){
+	std::string fileName;
+	std::string line;
+	std::ifstream myFile("myscene.scn");
+	int lineNo = 1;
+	glm::vec3 scale, trans, rot;
+	if(myFile.is_open()){
+		while (getline(myFile,line)){
+			if(lineNo==1 || lineNo==5 || lineNo==9){
+				fileName = line;
+			}
+			if(lineNo==2 || lineNo==6 || lineNo==10){
+				std::vector<double> vec = tokenizer(line, ' ');
+				equate(scale,vec);
+			}
+			if(lineNo==3 || lineNo==7 || lineNo==11){
+				std::vector<double> vec = tokenizer(line, ' ');
+				equate(rot,vec);
+			}
+			if(lineNo==4 || lineNo==8 || lineNo==12){
+				std::vector<double> vec = tokenizer(line, ' ');
+				equate(trans,vec);	
+				loadRawImage(fileName,lineNo/4-1,scale,rot,trans);
+			}
+			if(lineNo==13){
+				std::vector<double> vec = tokenizer(line, ' ');
+				equate(eye,vec);
+			}
+			if(lineNo==14){
+				std::vector<double> vec = tokenizer(line, ' ');
+				equate(lookAt,vec);
+			}
+			if(lineNo==15){
+				std::vector<double> vec = tokenizer(line, ' ');
+				equate(up,vec);	
+			}
+			if(lineNo==16){
+				std::vector<double> vec = tokenizer(line, ',');	
+				frustumL = vec[0];
+				frustumR = vec[1];
+				frustumT = vec[2];
+				frustumB = vec[3];
+			}
+			if(lineNo==17){
+				std::vector<double> vec = tokenizer(line, ',');	
+				frustumN = vec[0];
+				frustumF = vec[1];
+			}
+			lineNo++;
+		}
+		myFile.close();
+	}
+
+}
 
 int main(int argc, char** argv)
 {
@@ -139,6 +250,11 @@ int main(int argc, char** argv)
 	csX75::initGL();
 	initBuffersGL();
 	bool tempBool = false;
+
+	//Filling vertexGroups and colorGroups
+	loadScene();
+
+
 	// Loop until the user closes the window
 	while (glfwWindowShouldClose(window) == 0)
 		{

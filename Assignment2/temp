@@ -1,0 +1,1 @@
+g++ -I/usr/local/include -I./ assignment.cpp gl_framework.cpp shader_util.cpp  -o assignment -L/usr/local/lib  -lGL -lGLEW -lglfw3 -lXxf86vm -lX11 -lpthread -lXrandr -lXinerama -lXi -lXcursor

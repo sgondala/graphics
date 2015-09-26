@@ -25,11 +25,21 @@
 #include "glm/gtc/type_ptr.hpp"
 #include <vector>
 
+#define pb push_back 
+
 
 int mode = 0; //1 for inspection mode
 glm::vec4 vertices[200];
 glm::vec4 colors[200];
+
+glm::vec4 vertexGroups[4][200];
+glm::vec4 colorGroups[4][200];
+int vertexCount[] = {0,0,0,0};
+
 int vertexNo = 0;
+
+float frustumL, frustumR, frustumT, frustumB, frustumN, frustumF;
+glm::vec3 eye, lookAt, up;
 
 GLfloat xTrans = 0.0, yTrans = 0.0, zTrans = 0.0;
 GLfloat xrot=0.0,yrot=0.0,zrot=0.0;

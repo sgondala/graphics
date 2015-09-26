@@ -1,13 +1,9 @@
 Implemented - 
-Saving, retriving, drawing, adding coordinates - Everything done
-Translations - Done
 
 To do - 
-Rotations, 3 models generation
+Right now for center considering sum of all - Should take only vertices
 
 Bugs - 
-Z non zero - Some problem - Should fix it
-While saving after translations, Should save x+xTrans, not just x
 
 Doubts - 
 
