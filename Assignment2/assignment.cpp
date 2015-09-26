@@ -4,10 +4,12 @@ GLuint shaderProgram;
 GLuint vao[4];
 GLuint verticesVbo[4], colorsVbo[4];
 
-GLuint uModelViewMatrix;
+GLuint uModelViewMatrix, orthoMatrix, caseNo;
+
+GLfloat caseHere;
 
 glm::mat4 translationMatrix, rotationMatrix;
-glm::mat4 modelviewMatrix,orthoMatrix;
+glm::mat4 modelviewMatrix;
 glm::vec3 frustumxyz[9];
 
 void initBuffersGL(){
@@ -21,6 +23,11 @@ void initBuffersGL(){
 
 	shaderProgram = csX75::CreateProgramGL(shaderList);
 	glUseProgram( shaderProgram );
+
+	uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
+	orthoMatrix = glGetUniformLocation( shaderProgram, "orthoMatrix");
+	caseNo = glGetUniformLocation( shaderProgram, "caseNo");
+
 }
 
 std::vector<double> tokenizer(std::string line, char token){
@@ -282,6 +289,7 @@ void renderGL(){
 								{uCap.z, vCap.z, nCap.z, 0},
 								eBar};
 		modelviewMatrix = requiredMat;
+		caseHere = 2;
 	}
 
 	if(choosenCCS){
@@ -293,13 +301,19 @@ void renderGL(){
 		glm::mat4 requiredMat(col1, col2, col3, col4);
 		
 		modelviewMatrix = requiredMat*modelviewMatrix;
+		caseHere = 3;
+	}
+
+	if(choosenNDCS){
+		caseHere = 4;
 	}
 
 	double scale_factor = 10;
-	orthoMatrix = glm::ortho(-scale_factor, scale_factor, -scale_factor, scale_factor, -scale_factor, scale_factor);
-	modelviewMatrix = orthoMatrix*modelviewMatrix;
-	
+	glm::mat4 orthoMatrixHere = glm::ortho(-scale_factor, scale_factor, -scale_factor, scale_factor, -scale_factor, scale_factor);
+
 	glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelviewMatrix));
+	glUniformMatrix4fv(orthoMatrix, 1, GL_FALSE, glm::value_ptr(orthoMatrixHere));
+	glUniform1f(caseNo, caseHere);
 
 	GLuint vPosition, vColor;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
