@@ -152,8 +152,8 @@ void loadRawImage(std::string fileName, int indexInArray, glm::vec3 scale,
 	// GLfloat tempXRot = (rot.x)*(3.14)/(180);
 	std::cout << rot.x << " " << rot.y << " " << rot.z << std::endl;
 	rotMatTemp = glm::rotate(glm::mat4(1.0f), (GLfloat) ((rot.x)*(3.14)/(180)), glm::vec3(1.0f,0.0f,0.0f));
-	rotMatTemp = glm::rotate(rotationMatrix, (GLfloat) ((rot.y)*(3.14)/(180)), glm::vec3(0.0f,1.0f,0.0f));
-	rotMatTemp = glm::rotate(rotationMatrix, (GLfloat) ((rot.z)*(3.14)/(180)), glm::vec3(0.0f,0.0f,1.0f));
+	rotMatTemp = glm::rotate(rotMatTemp, (GLfloat) ((rot.y)*(3.14)/(180)), glm::vec3(0.0f,1.0f,0.0f));
+	rotMatTemp = glm::rotate(rotMatTemp, (GLfloat) ((rot.z)*(3.14)/(180)), glm::vec3(0.0f,0.0f,1.0f));
 	scaleMatRot = glm::scale(glm::mat4(1.0f), scale);
 
 	finalMat = transMatTemp*transBodyCenterNeg*rotMatTemp*scaleMatRot*transBodyCenter;
@@ -268,20 +268,20 @@ void renderGL(){
 	zTransTemp = -zTransTemp/vertexNo;
 	*/
 	//translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xTransTemp, yTransTemp, zTransTemp));
-	/*rotationMatrix = glm::rotate(glm::mat4(1.0f), xrot, glm::vec3(1.0f,0.0f,0.0f));
+	rotationMatrix = glm::rotate(glm::mat4(1.0f), xrot, glm::vec3(1.0f,0.0f,0.0f));
 	rotationMatrix = glm::rotate(rotationMatrix, yrot, glm::vec3(0.0f,1.0f,0.0f));
 	rotationMatrix = glm::rotate(rotationMatrix, zrot, glm::vec3(0.0f,0.0f,1.0f));
 	modelviewMatrix = rotationMatrix; //* translationMatrix;
 
-	//translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-xTransTemp, -yTransTemp, -zTransTemp));
-	//modelviewMatrix = translationMatrix * modelviewMatrix;
+	// translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-xTransTemp, -yTransTemp, -zTransTemp));
+	// modelviewMatrix = translationMatrix * modelviewMatrix;
 	
 	translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(xTrans, yTrans, zTrans));
 	modelviewMatrix = translationMatrix*modelviewMatrix;
-	*/
+	
 	double scale_factor = 10;
 	orthoMatrix = glm::ortho(-scale_factor, scale_factor, -scale_factor, scale_factor, -scale_factor, scale_factor);
-	modelviewMatrix = orthoMatrix;
+	modelviewMatrix = orthoMatrix*modelviewMatrix;
 
 	glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelviewMatrix));
 
