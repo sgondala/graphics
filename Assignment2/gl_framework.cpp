@@ -5,7 +5,8 @@ extern glm::vec4 colors[200];
 extern int vertexNo;
 extern GLfloat xTrans, yTrans, zTrans, xrot, yrot, zrot;
 extern int terminalInput;
-
+extern glm::vec3 eye, lookAt, up;
+extern bool choosenVCS;
 namespace csX75
 {
 	//! Initialize GL State
@@ -110,6 +111,9 @@ namespace csX75
 		}
 		else if(key == GLFW_KEY_PAGE_DOWN && action == GLFW_PRESS){
 			zrot = zrot + -0.1;
+		}
+		else if(key == GLFW_KEY_1 && action == GLFW_PRESS){
+			choosenVCS = true;
 		}
 
 	}

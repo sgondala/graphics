@@ -71,6 +71,17 @@ void renderGL(){
 	orthoMatrix = glm::ortho(-scale_factor, scale_factor, -scale_factor, scale_factor, -scale_factor, scale_factor);
 	//orthoMatrix = glm::ortho(-8.0, 8.0, -8.0, 8.0, -8.0, 8.0);
 	modelviewMatrix = orthoMatrix*modelviewMatrix;
+	if(choosenVCS){
+		glm::vec3 nCap = glm::normalize(eye-lookAt);
+		glm::vec3 uCap = glm::normalize(glm::cross(up,nCap));
+		glm::vec3 vCap = glm::normalize(glm::cross(nCap,uCap));	
+		glm::vec4 eBar(-dot(uCap,eye),-dot(vCap,eye),-dot(nCap,eye),1); 
+		glm::mat4 requiredMat = {{uCap.x, vCap.x, nCap.x, 0},
+								{uCap.y, vCap.y, nCap.y, 0},
+								{uCap.z, vCap.z, nCap.z, 0},
+								eBar};
+		modelviewMatrix = requiredMat * modelviewMatrix;	
+	}
 
 	glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelviewMatrix));
 	glDrawArrays(GL_TRIANGLES, 0, (vertexNo/3)*3);
@@ -85,6 +96,7 @@ std::vector<double> tokenizer(std::string line, char token){
 		inputFromFile.push_back(atof(value.c_str()));
 		line = line.substr(temp+1);
 	}
+	inputFromFile.pb(atof(line.c_str()));
 	return inputFromFile;
 }
 
@@ -188,7 +200,6 @@ void loadScene(){
 		}
 		myFile.close();
 	}
-
 }
 
 int main(int argc, char** argv)
