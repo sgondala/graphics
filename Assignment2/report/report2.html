@@ -1,0 +1,37 @@
+
+<!DOCTYPE html>
+<!-- <html> -->
+<head>
+	<link rel="stylesheet" type="text/css" href="theme.css">
+</head>
+
+
+<body class="bodyClass">
+	<center>
+		<h1 class="mainh1">
+		Graphics Assignment 2
+		</h1>
+		<p class="nameClass">
+		Sashank Gondala <br>
+		Sai Charan
+		</p>
+	</center>
+	<ul class="contentClass">
+		<li> Implemented all the transformations along the model-viewing pipeline </li>
+		<li> First image consists of a scene consisting of models of paperplane, spectacles, windmill and the frustum centered eye (at specified coordinates), all of which is viewed from a second orthographic plane (WCS) </li>
+		<li> Rotation and translation in this scene across second orthographic plane is enabled, to a better understanding of the object locations </li>
+		<li> Second scenario, consists of the above scene (in wcs) as viewed from the eye location as an orthographic projection(VCS) </li>
+		<li> Third, the above scene is subjected to perspective transformation with eye the point of projection(CCS) </li>
+		<li> Fourth, the obtained 4d- coordinates are cut down to 3-dimensions by division of first three coordinates of each vertex by the fourth coordinate, which is essentially marking reducing the image to 3d coordinates, a projection of which was presented(NDCS) </li>
+		<li> Lastly, the above obtained ndcs coordinates are fitted in order to cover up the screen of the device (which in our case, we found the limits by trial and error, each time managing the scene to remain inside the window (DCS) </li>
+	</ul>
+	
+	<div class="imgClass">
+		<img src="Images/WCS.png"/>
+	    <img src="Images/VCS.png"/>
+	    <img src="Images/CCS.png"/>
+		<img src="Images/NDCS.png"/>
+		<img src="Images/DCS.png"/>
+	</div>    
+
+</body>
