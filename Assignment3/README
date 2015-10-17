@@ -1,0 +1,21 @@
+Using the following commands for controlling the humanoid
+
+Translating whole body  - 
+W,S - Move it in +y and -y
+D,A - Move it in +x and -X
+
+Selecting parts - 
+H - To select head as current node
+J - To select lower left hand as current node
+Shift + J - To select upper left hand as current node
+K - To select lower right hand as current node
+Shift + K - To select upper right hand as current node
+N - To select lower left leg as current node
+Shift + N - To select upper left leg as current node
+M - To select lower right leg as current node
+Shift + M - To select upper right leg as current node
+
+Rotating a part - 
+Up and Down - About X
+Left and Right - About Y
+Page Up and Page Down - About Z
