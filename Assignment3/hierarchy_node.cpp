@@ -50,7 +50,7 @@ namespace csX75
 		//initial parameters are set to 0;
 
 		tx=ty=tz=rx=ry=rz=0;
-		sx=sy=sz=1;
+		// sx=sy=sz=1;
 
 		update_matrices();
 	}
@@ -144,6 +144,36 @@ namespace csX75
 
 	void HNode::dec_rz(){
 		rz--;
+		update_matrices();
+	}
+
+	void HNode::inc_tx(bool direction){
+		if(direction){
+			tx++;
+		}
+		else{
+			tx--;
+		}
+		update_matrices();
+	}
+
+	void HNode::inc_ty(bool direction){
+		if(direction){
+			ty++;
+		}
+		else{
+			ty--;
+		}
+		update_matrices();
+	}
+
+	void HNode::inc_tz(bool direction){
+		if(direction){
+			tz++;
+		}
+		else{
+			tz--;
+		}
 		update_matrices();
 	}
 

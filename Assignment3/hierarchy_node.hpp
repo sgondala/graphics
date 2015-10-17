@@ -21,7 +21,7 @@ namespace csX75	 {
 	class HNode {
 		//glm::vec4 * vertices;
 		//glm::vec4 * colors;
-		GLfloat tx,ty,tz,rx,ry,rz,sx,sy,sz;
+		GLfloat tx,ty,tz,rx,ry,rz;
 
 		std::size_t vertex_buffer_size;
 		std::size_t color_buffer_size;
@@ -52,7 +52,9 @@ namespace csX75	 {
 		void dec_rx();
 		void dec_ry();
 		void dec_rz();
-		// GLfloat
+		void inc_tx(bool);
+		void inc_ty(bool);
+		void inc_tz(bool);		
 	};
 
 	glm::mat4* multiply_stack(std::vector <glm::mat4> );

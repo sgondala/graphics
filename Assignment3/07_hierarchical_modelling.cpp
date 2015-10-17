@@ -92,7 +92,6 @@ void colorcube(GLfloat xDim, GLfloat yDim)
 void initBuffersGL(void)
 {
 
-	// Load shaders and use the resulting shader program
 	std::string vertex_shader_file("07_vshader.glsl");
 	std::string fragment_shader_file("07_fshader.glsl");
 
@@ -103,16 +102,10 @@ void initBuffersGL(void)
 	shaderProgram = csX75::CreateProgramGL(shaderList);
 	glUseProgram( shaderProgram );
 
-	// getting the attributes from the shader program
 	vPosition = glGetAttribLocation( shaderProgram, "vPosition" );
 	vColor = glGetAttribLocation( shaderProgram, "vColor" ); 
 	uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
 
-	// Creating the hierarchy:
-	// We are using the original colorcube function to generate the vertices of the cuboid
-
-	//note that the buffers are initialized in the respective constructors
- 
 	colorcube(1.5,3.0);
 	chest = new csX75::HNode(NULL,num_vertices,v_positions,v_colors,sizeof(v_positions),sizeof(v_colors));
 	chest->change_parameters(0,0,0,0,0,0);
