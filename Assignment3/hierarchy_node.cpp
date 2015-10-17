@@ -15,7 +15,6 @@ namespace csX75
 		color_buffer_size = c_size;
 		// initialize vao and vbo of the object;
 
-
 		//Ask GL for a Vertex Attribute Objects (vao)
 		glGenVertexArrays (1, &vao);
 		//Ask GL for aVertex Buffer Object (vbo)
@@ -51,6 +50,7 @@ namespace csX75
 		//initial parameters are set to 0;
 
 		tx=ty=tz=rx=ry=rz=0;
+		sx=sy=sz=1;
 
 		update_matrices();
 	}
@@ -62,7 +62,7 @@ namespace csX75
 		rotation = glm::rotate(rotation, glm::radians(rz), glm::vec3(0.0f,0.0f,1.0f));
 
 		translation = glm::translate(glm::mat4(1.0f),glm::vec3(tx,ty,tz));
-
+		// scale = glm::scale(glm::mat4(1.0f),glm::vec3(sx,sy,sz));
 
 	}
 
@@ -71,14 +71,18 @@ namespace csX75
 
 	}
 
-	void HNode::change_parameters(GLfloat atx, GLfloat aty, GLfloat atz, GLfloat arx, GLfloat ary, GLfloat arz){
+	void HNode::change_parameters(GLfloat atx, GLfloat aty, GLfloat atz, 
+		GLfloat arx, GLfloat ary, GLfloat arz){
+		// GLfloat asx, GLfloat asy, GLfloat asz){
 		tx = atx;
 		ty = aty;
 		tz = atz;
 		rx = arx;
 		ry = ary;
 		rz = arz;
-
+		// sx = asx;
+		// sy = asy;
+		// sz = asz;
 		update_matrices();
 	}
 
@@ -98,6 +102,7 @@ namespace csX75
 
 	void HNode::render_tree(){
 		
+		// matrixStack.push_back(scale);
 		matrixStack.push_back(translation);
 		matrixStack.push_back(rotation);
 
@@ -107,6 +112,7 @@ namespace csX75
 		}
 		matrixStack.pop_back();
 		matrixStack.pop_back();
+		// matrixStack.pop_back();
 
 	}
 
