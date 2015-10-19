@@ -47,10 +47,10 @@ GLuint vPosition,vColor;
 
 //global matrix stack for hierarchical modelling
 std::vector<glm::mat4> matrixStack;
-
+int objectSelected, podno = -1, podarmno = 1, podselected = 0;
 csX75::HNode* root_node;
 csX75::HNode* curr_node;
-
+//c3po------------------------------------------//
 csX75::HNode* chest;
 csX75::HNode* head;
 csX75::HNode* rightUpperArm;
@@ -61,8 +61,20 @@ csX75::HNode* rightUpperLeg;
 csX75::HNode* rightLowerLeg;
 csX75::HNode* leftUpperLeg;
 csX75::HNode* leftLowerLeg;
+//c3po------------------------------------------//
 
-
+//vulture droid---------------------------------//
+csX75::HNode* vbody;
+csX75::HNode* vneck;
+csX75::HNode* vhead;
+csX75::HNode* vpod1arm;
+csX75::HNode* vpod1;
+csX75::HNode* vpod2arm;
+csX75::HNode* vpod2;
+csX75::HNode* vpod3arm;
+csX75::HNode* vpod3;
+csX75::HNode* vpod4arm;
+csX75::HNode* vpod4;
 //-------------------------------------------------------------------------
 
 #endif

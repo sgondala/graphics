@@ -5,6 +5,10 @@ extern GLfloat c_xrot,c_yrot,c_zrot;
 extern bool enable_perspective;
 extern csX75::HNode* chest, *head, *rightUpperArm, *rightLowerArm, *leftUpperArm, *leftLowerArm,
 					*leftUpperLeg, *leftLowerLeg, *rightUpperLeg, *rightLowerLeg, *curr_node;
+extern csX75::HNode* vbody, *vneck, *vhead, *vpod1arm, *vpod1, *vpod2arm, *vpod2, *vpod3arm, *vpod3, *vpod4arm, *vpod4;
+extern int objectSelected;
+extern int podno, podarmno, podselected;
+
 namespace csX75
 {
 	//! Initialize GL State
@@ -39,113 +43,307 @@ namespace csX75
 		//!Close the window if the ESC key was pressed
 		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, GL_TRUE);
-		else if(key == GLFW_KEY_D && action == GLFW_PRESS){
+		// mode to select the object one wishes to interact with
+		else if (key == GLFW_KEY_C && action == GLFW_PRESS)
+			objectSelected = 1;
+		//c3po controls ---------------------------------------------------------------//
+		else if(key == GLFW_KEY_D && action == GLFW_PRESS && objectSelected == 1){
 			chest->inc_tx(1);
 		}
-		else if(key == GLFW_KEY_A && action == GLFW_PRESS){
+		else if(key == GLFW_KEY_A && action == GLFW_PRESS && objectSelected == 1){
 			chest->inc_tx(0);
 		}
-		else if(key == GLFW_KEY_W && action == GLFW_PRESS){
+		else if(key == GLFW_KEY_W && action == GLFW_PRESS && objectSelected == 1){
 			chest->inc_ty(1);
 		}
-		else if(key == GLFW_KEY_S && action == GLFW_PRESS){
+		else if(key == GLFW_KEY_S && action == GLFW_PRESS && objectSelected == 1){
 			chest->inc_ty(0);
 		}
-		else if(key == GLFW_KEY_H && action == GLFW_PRESS){
+		else if(key == GLFW_KEY_H && action == GLFW_PRESS && objectSelected == 1){
 			curr_node = head;
 			std::cout<<"Selected head"<<std::endl;
 		}
-		else if(key == GLFW_KEY_J && action == GLFW_PRESS && mods==GLFW_MOD_SHIFT){
+		else if(key == GLFW_KEY_J && action == GLFW_PRESS && objectSelected == 1 && mods==GLFW_MOD_SHIFT){
 			curr_node = leftUpperArm;
 			std::cout<<"Selected leftUpperArm"<<std::endl;
 		}
-		else if(key == GLFW_KEY_J && action == GLFW_PRESS){
+		else if(key == GLFW_KEY_J && action == GLFW_PRESS && objectSelected == 1){
 			curr_node = leftLowerArm;
 			std::cout<<"Selected leftLowerArm"<<std::endl;
 		}
-		else if(key == GLFW_KEY_K && action == GLFW_PRESS && mods==GLFW_MOD_SHIFT){
+		else if(key == GLFW_KEY_K && action == GLFW_PRESS && objectSelected == 1 && mods==GLFW_MOD_SHIFT){
 			curr_node = rightUpperArm;
 			std::cout<<"Selected rightUpperArm"<<std::endl;
 		}
-		else if(key == GLFW_KEY_K && action == GLFW_PRESS){
+		else if(key == GLFW_KEY_K && action == GLFW_PRESS && objectSelected == 1){
 			curr_node = rightLowerArm;
 			std::cout<<"Selected rightLowerArm"<<std::endl;
 		}
-		else if(key == GLFW_KEY_N && action == GLFW_PRESS && mods==GLFW_MOD_SHIFT){
+		else if(key == GLFW_KEY_N && action == GLFW_PRESS && objectSelected == 1 && mods==GLFW_MOD_SHIFT){
 			curr_node = leftUpperLeg;
 			std::cout<<"Selected leftUpperLeg"<<std::endl;
 		}
-		else if(key == GLFW_KEY_N && action == GLFW_PRESS){
+		else if(key == GLFW_KEY_N && action == GLFW_PRESS && objectSelected == 1){
 			curr_node = leftLowerLeg;
 			std::cout<<"Selected leftLowerLeg"<<std::endl;
 		}
-		else if(key == GLFW_KEY_M && action == GLFW_PRESS && mods==GLFW_MOD_SHIFT){
+		else if(key == GLFW_KEY_M && action == GLFW_PRESS && objectSelected == 1 && mods==GLFW_MOD_SHIFT){
 			curr_node = rightUpperLeg;
 			std::cout<<"Selected rightUpperLeg"<<std::endl;
 		}
-		else if(key == GLFW_KEY_M && action == GLFW_PRESS){
+		else if(key == GLFW_KEY_M && action == GLFW_PRESS && objectSelected == 1){
 			curr_node = rightLowerLeg;
 			std::cout<<"Selected rightLowerLeg"<<std::endl;
 		}
-		else if(key == GLFW_KEY_RIGHT && action == GLFW_PRESS){
+		else if(key == GLFW_KEY_RIGHT && action == GLFW_PRESS && objectSelected == 1){
 			curr_node->inc_ry();
 			std::cout<<"Selected increasingY"<<std::endl;
 		}
-		else if(key == GLFW_KEY_LEFT && action == GLFW_PRESS){
+		else if(key == GLFW_KEY_LEFT && action == GLFW_PRESS && objectSelected == 1){
 			curr_node->dec_ry();
 			std::cout<<"Selected decreasingY"<<std::endl;
 		}
-		else if(key == GLFW_KEY_UP && action == GLFW_PRESS){
+		else if(key == GLFW_KEY_UP && action == GLFW_PRESS && objectSelected == 1){
 			curr_node->inc_rx();
 			std::cout<<"Selected increasingX"<<std::endl;
 		}
-		else if(key == GLFW_KEY_DOWN && action == GLFW_PRESS){
+		else if(key == GLFW_KEY_DOWN && action == GLFW_PRESS && objectSelected == 1){
 			curr_node->dec_rx();
 			std::cout<<"Selected decreasingX"<<std::endl;
 		}
-		else if(key == GLFW_KEY_PAGE_UP && action == GLFW_PRESS){
+		else if(key == GLFW_KEY_PAGE_UP && action == GLFW_PRESS && objectSelected == 1){
 			curr_node->inc_rz();
 			std::cout<<"Selected increasingZ"<<std::endl;
 		}
-		else if(key == GLFW_KEY_PAGE_DOWN && action == GLFW_PRESS){
+		else if(key == GLFW_KEY_PAGE_DOWN && action == GLFW_PRESS && objectSelected == 1){
 			curr_node->dec_rz();
 			std::cout<<"Selected decreasingZ"<<std::endl;
 		}
+		//c3po controls ---------------------------------------------------------------//
+		
+
+		//vulture droid controls-------------------------------------------------------//
+		else if (key == GLFW_KEY_V && action == GLFW_PRESS){
+			objectSelected = 2;
+			curr_node = vbody;
+			std::cout << "body of the vulture droid is selected" << std::endl;
+		}
+		else if(key == GLFW_KEY_D && action == GLFW_PRESS && objectSelected == 2){
+			vbody->inc_tx(1);
+		}
+		else if(key == GLFW_KEY_A && action == GLFW_PRESS && objectSelected == 2){
+			vbody->inc_tx(0);
+		}
+		else if(key == GLFW_KEY_W && action == GLFW_PRESS && objectSelected == 2){
+			vbody->inc_ty(1);
+		}
+		else if(key == GLFW_KEY_S && action == GLFW_PRESS && objectSelected == 2){
+			vbody->inc_ty(0);
+		}
+		else if(key == GLFW_KEY_P && action == GLFW_PRESS && objectSelected == 2){
+			podselected = 1;
+			std::cout << "pod selected. Now select the number of pod to move" << std::endl;
+		}
+		else if(key == GLFW_KEY_1 && action == GLFW_PRESS && objectSelected == 2){
+			if(podselected == 1){
+				podno = 1;
+				std::cout<<"pod1 selected"<<std::endl;
+			}
+			else {
+				podarmno = 1;
+				std::cout<<"pod arm 1 selected"<<std::endl;
+			}
+		}
+		else if(key == GLFW_KEY_2 && action == GLFW_PRESS && objectSelected == 2){
+			if(podselected == 1){
+				podno = 2;
+				std::cout<<"pod2 selected"<<std::endl;
+			}
+			else {
+				podarmno = 2;
+				std::cout<<"pod arm 2 selected"<<std::endl;
+			}
+		}
+		else if(key == GLFW_KEY_3 && action == GLFW_PRESS && objectSelected == 2){
+			if(podselected == 1){
+				podno = 3;
+				std::cout<<"pod 3 selected"<<std::endl;
+			}
+			else {
+				podarmno = 3;
+				std::cout<<"pod arm 3 selected"<<std::endl;
+			}
+		}
+		else if(key == GLFW_KEY_4 && action == GLFW_PRESS && objectSelected == 2){
+			if(podselected == 1){
+				podno = 4;
+				std::cout<<"pod 4 selected"<<std::endl;
+			}
+			else {
+				podarmno = 4;
+				std::cout<<"pod arm 4 selected"<<std::endl;
+			}
+		}
+		else if(key == GLFW_KEY_SPACE && action == GLFW_PRESS && objectSelected == 2){
+			if(podselected == 1){
+				if(podno == 1){
+					vpod1->dec_rx();
+					std::cout << "pod 1 moved";
+				}
+				else if(podno == 2){
+					vpod2->inc_rx();
+					std::cout << "pod 2 moved";
+				}
+				else if(podno == 3){
+					vpod3->dec_rx();
+					std::cout << "pod 3 moved";
+				}
+				else if(podno == 4){
+					vpod4->inc_rx();
+					std::cout << "pod 4 moved";
+				}
+			}
+			else {
+				if(podarmno == 1){
+					vpod1arm->inc_ry();
+					std::cout << "pod arm 1 moved";
+				}
+				else if(podarmno == 2){
+					vpod2arm->dec_ry();
+					std::cout << "pod arm 2 moved";
+				}
+				else if(podarmno == 3){
+					vpod3arm->dec_ry();
+					std::cout << "pod arm 3 moved";
+				}
+				else if(podarmno == 4){
+					vpod4arm->inc_ry();
+					std::cout << "pod arm 4 moved";
+				}
+			}
+			std::cout << " in positive direction" << std::endl;
+		}
+		else if(key == GLFW_KEY_MINUS && action == GLFW_PRESS && objectSelected == 2){
+			if(podselected == 1){
+				if(podno == 1){
+					vpod1->inc_rx();
+					std::cout << "pod 1 moved";
+				}
+				else if(podno == 2){
+					vpod2->dec_rx();
+					std::cout << "pod 2 moved";
+				}
+				else if(podno == 3){
+					vpod3->inc_rx();
+					std::cout << "pod 3 moved";
+				}
+				else if(podno == 4){
+					vpod4->dec_rx();
+					std::cout << "pod 4 moved";
+				}
+			}
+			else {
+				if(podarmno == 1){
+					vpod1arm->dec_ry();
+					std::cout << "pod arm 1 moved";
+				}
+				else if(podarmno == 2){
+					vpod2arm->inc_ry();
+					std::cout << "pod arm 2 moved";
+				}
+				else if(podarmno == 3){
+					vpod3arm->inc_ry();
+					std::cout << "pod arm 3 moved";
+				}
+				else if(podarmno == 4){
+					vpod4arm->dec_ry();
+					std::cout << "pod arm 4 moved";
+				}
+			}
+			std::cout << " in negative direction" << std::endl;
+		}
+		else if(key == GLFW_KEY_U && action == GLFW_PRESS && objectSelected == 2){
+			vneck->inc_rx();
+			std::cout<<"vulture neck moved in positive direction"<<std::endl;
+		}
+		else if(key == GLFW_KEY_B && action == GLFW_PRESS && objectSelected == 2){
+			vneck->dec_rx();
+			std::cout<<"vulture neck moved in negative direction"<<std::endl;
+		}
+		else if(key == GLFW_KEY_R && action == GLFW_PRESS && objectSelected == 2){
+			vhead->inc_ry();
+			std::cout<<"vulture head moved towards right"<<std::endl;
+		}
+		else if(key == GLFW_KEY_L && action == GLFW_PRESS && objectSelected == 2){
+			vhead->dec_ry();
+			std::cout<<"vulture neck moved towards left"<<std::endl;
+		}
+		else if(key == GLFW_KEY_U && action == GLFW_PRESS && objectSelected == 2){
+			vneck->inc_rx();
+			std::cout<<"vulture Selected increasingY"<<std::endl;
+		}
+		else if(key == GLFW_KEY_RIGHT && action == GLFW_PRESS && objectSelected == 2){
+			curr_node->inc_ry();
+			std::cout<<"vulture Selected increasingY"<<std::endl;
+		}
+		else if(key == GLFW_KEY_LEFT && action == GLFW_PRESS && objectSelected == 2){
+			curr_node->dec_ry();
+			std::cout<<"vulture  Selected decreasingY"<<std::endl;
+		}
+		else if(key == GLFW_KEY_UP && action == GLFW_PRESS && objectSelected == 2){
+			curr_node->inc_rx();
+			std::cout<<"vulture  Selected increasingX"<<std::endl;
+		}
+		else if(key == GLFW_KEY_DOWN && action == GLFW_PRESS && objectSelected == 2){
+			curr_node->dec_rx();
+			std::cout<<"vulture  Selected decreasingX"<<std::endl;
+		}
+		else if(key == GLFW_KEY_PAGE_UP && action == GLFW_PRESS && objectSelected == 2){
+			curr_node->inc_rz();
+			std::cout<<"vulture  Selected increasingZ"<<std::endl;
+		}
+		else if(key == GLFW_KEY_PAGE_DOWN && action == GLFW_PRESS && objectSelected == 2){
+			curr_node->dec_rz();
+			std::cout<<"vulture  Selected decreasingZ"<<std::endl;
+		}
+
+		//vulture droid controls-------------------------------------------------------//
+
 	}
 };
 	
 
-	// else if (key == GLFW_KEY_1 && action == GLFW_PRESS)
+	// else if (key == GLFW_KEY_1 && action == GLFW_PRESS && objectSelected == 1)
 		//   curr_node = node1;  
-		// else if (key == GLFW_KEY_2 && action == GLFW_PRESS)
+		// else if (key == GLFW_KEY_2 && action == GLFW_PRESS && objectSelected == 1)
 		//   curr_node = node2; 
-		// else if (key == GLFW_KEY_3 && action == GLFW_PRESS)
+		// else if (key == GLFW_KEY_3 && action == GLFW_PRESS && objectSelected == 1)
 		//   curr_node = node3; 
-		// else if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
+		// else if (key == GLFW_KEY_LEFT && action == GLFW_PRESS && objectSelected == 1)
 		//   curr_node->dec_ry();
-		// else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
+		// else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS && objectSelected == 1)
 		//   curr_node->inc_ry();
-		// else if (key == GLFW_KEY_UP && action == GLFW_PRESS)
+		// else if (key == GLFW_KEY_UP && action == GLFW_PRESS && objectSelected == 1)
 		//   curr_node->dec_rx();
-		// else if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
+		// else if (key == GLFW_KEY_DOWN && action == GLFW_PRESS && objectSelected == 1)
 		//   curr_node->inc_rx();
-		// else if (key == GLFW_KEY_PAGE_UP && action == GLFW_PRESS)
+		// else if (key == GLFW_KEY_PAGE_UP && action == GLFW_PRESS && objectSelected == 1)
 		//   curr_node->dec_rz();
-		// else if (key == GLFW_KEY_PAGE_DOWN && action == GLFW_PRESS)
+		// else if (key == GLFW_KEY_PAGE_DOWN && action == GLFW_PRESS && objectSelected == 1)
 		//   curr_node->inc_rz();
-		// else if (key == GLFW_KEY_P && action == GLFW_PRESS)
+		// else if (key == GLFW_KEY_P && action == GLFW_PRESS && objectSelected == 1)
 		//   enable_perspective = !enable_perspective;   
-		// else if (key == GLFW_KEY_A  && action == GLFW_PRESS)
+		// else if (key == GLFW_KEY_A  && action == GLFW_PRESS && objectSelected == 1)
 		//   c_yrot -= 1.0;
-		// else if (key == GLFW_KEY_D  && action == GLFW_PRESS)
+		// else if (key == GLFW_KEY_D  && action == GLFW_PRESS && objectSelected == 1)
 		//   c_yrot += 1.0;
-		// else if (key == GLFW_KEY_W  && action == GLFW_PRESS)
+		// else if (key == GLFW_KEY_W  && action == GLFW_PRESS && objectSelected == 1)
 		//   c_xrot -= 1.0;
-		// else if (key == GLFW_KEY_S  && action == GLFW_PRESS)
+		// else if (key == GLFW_KEY_S  && action == GLFW_PRESS && objectSelected == 1)
 		//   c_xrot += 1.0;        
-		// else if (key == GLFW_KEY_Q  && action == GLFW_PRESS)
+		// else if (key == GLFW_KEY_Q  && action == GLFW_PRESS && objectSelected == 1)
 		//   c_zrot -= 1.0;
-		// else if (key == GLFW_KEY_E  && action == GLFW_PRESS)
+		// else if (key == GLFW_KEY_E  && action == GLFW_PRESS && objectSelected == 1)
 		//   c_zrot += 1.0;   
 		
 

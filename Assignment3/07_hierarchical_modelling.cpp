@@ -36,10 +36,10 @@ const int num_vertices = 36;
 
 //Eight vertices in homogenous coordinates
 //elongated cuboid, basic arm in the hierarchy;
-glm::vec4 positions[8];
+glm::vec4 positions[100];
 
 //RGBA colors
-glm::vec4 colors[8] = { 
+glm::vec4 colors[100] = { 
 	glm::vec4(1.0, 0.0, 0.0, 1.0),
 	glm::vec4(1.0, 0.0, 0.0, 1.0),
 	glm::vec4(1.0, 0.0, 0.0, 1.0),
@@ -51,44 +51,220 @@ glm::vec4 colors[8] = {
 
 };
 
+glm::vec4 red = glm::vec4(1.0,0.0,0.0,1.0);
+glm::vec4 green = glm::vec4(0.0,1.0,0.0,1.0);
+glm::vec4 blue = glm::vec4(0.0,0.0,1.0,1.0);
+
+
 int tri_idx=0;
-glm::vec4 v_positions[num_vertices];
-glm::vec4 v_colors[num_vertices];
+glm::vec4 v_positions[100];
+glm::vec4 v_colors[100];
 
 // quad generates two triangles for each face and assigns colors to the vertices
-void quad(int a, int b, int c, int d)
+void quad(int a, int b, int c, int d, glm::vec4 color)
 {
-	v_colors[tri_idx] = colors[a]; v_positions[tri_idx] = positions[a]; tri_idx++;
-	v_colors[tri_idx] = colors[b]; v_positions[tri_idx] = positions[b]; tri_idx++;
-	v_colors[tri_idx] = colors[c]; v_positions[tri_idx] = positions[c]; tri_idx++;
-	v_colors[tri_idx] = colors[a]; v_positions[tri_idx] = positions[a]; tri_idx++;
-	v_colors[tri_idx] = colors[c]; v_positions[tri_idx] = positions[c]; tri_idx++;
-	v_colors[tri_idx] = colors[d]; v_positions[tri_idx] = positions[d]; tri_idx++;
+	v_colors[tri_idx] = color; v_positions[tri_idx] = positions[a]; tri_idx++;
+	v_colors[tri_idx] = color; v_positions[tri_idx] = positions[b]; tri_idx++;
+	v_colors[tri_idx] = color; v_positions[tri_idx] = positions[c]; tri_idx++;
+	v_colors[tri_idx] = color; v_positions[tri_idx] = positions[a]; tri_idx++;
+	v_colors[tri_idx] = color; v_positions[tri_idx] = positions[c]; tri_idx++;
+	v_colors[tri_idx] = color; v_positions[tri_idx] = positions[d]; tri_idx++;
  }
 
+ void tri(int a, int b, int c, glm::vec4 color){
+ 	v_colors[tri_idx] = color; v_positions[tri_idx] = positions[a]; tri_idx++;
+	v_colors[tri_idx] = color; v_positions[tri_idx] = positions[b]; tri_idx++;
+	v_colors[tri_idx] = color; v_positions[tri_idx] = positions[c]; tri_idx++;
+ }
+
+ void quadpyramid(int a,int b, int c, int d, int apex, glm::vec4 color){
+ 	// number of vertices : 18
+	quad(a,b,c,d,glm::vec4(1.0,1.0,0.0,1));
+	tri(a,b,apex,red);
+	tri(b,c,apex,green); 
+	tri(c,d,apex,blue);
+	tri(a,d,apex,green);
+ }
+
+ void tripyramid(int a, int b, int c, int apex, glm::vec4 color){
+ 	// number of vertices : 12
+ 	tri(a,b,c,color);
+ 	tri(a,b,apex,color);
+ 	tri(b,c,apex,color);
+ 	tri(c,a,apex,color);
+ }
+
+ void cuboid(int p1, int p2, int p3, int p4,int p5, int p6, int p7, int p8, glm::vec4 color){
+ 	// number of vertices : 36
+ 	quad(p1,p2,p3,p4,color);
+ 	quad(p4,p5,p6,p7,color);
+ 	quad(p1,p2,p5,p6,color);
+ 	quad(p2,p3,p7,p6,color);
+ 	quad(p4,p3,p7,p8,color);
+ 	quad(p4,p8,p5,p1,color);
+ }
+ 
+
 // generate 12 triangles: 36 vertices and 36 colors
-void colorcube(GLfloat xDim, GLfloat yDim)
+void colorcube(GLfloat xDim, GLfloat yDim, GLfloat zDim,glm::vec4 color)
 {
 	tri_idx = 0;
-	positions[0] = glm::vec4(0,0,1,1);
-	positions[1] = glm::vec4(0,yDim,1,1);
-	positions[2] = glm::vec4(xDim,yDim,1,1);
-	positions[3] = glm::vec4(xDim,0,1,1);
+	positions[0] = glm::vec4(0,0,zDim,1);
+	positions[1] = glm::vec4(0,yDim,zDim,1);
+	positions[2] = glm::vec4(xDim,yDim,zDim,1);
+	positions[3] = glm::vec4(xDim,0,zDim,1);
 	positions[4] = glm::vec4(0,0,0,1);
 	positions[5] = glm::vec4(0,yDim,0,1);
 	positions[6] = glm::vec4(xDim,yDim,0,1);
 	positions[7] = glm::vec4(xDim,0,0,1);		
-	quad( 1, 0, 3, 2 );
-	quad( 2, 3, 7, 6 );
-	quad( 3, 0, 4, 7 );
-	quad( 6, 5, 1, 2 );
-	quad( 4, 5, 6, 7 );
-	quad( 5, 4, 0, 1 );
+	quad( 1, 0, 3, 2 ,color);
+	quad( 2, 3, 7, 6 ,color);
+	quad( 3, 0, 4, 7 ,color);
+	quad( 6, 5, 1, 2 ,color);
+	quad( 4, 5, 6, 7 ,color);
+	quad( 5, 4, 0, 1 ,color);
+}
+
+void centercube(GLfloat xDim, GLfloat yDim, GLfloat zDim,glm::vec4 color)
+{
+	tri_idx = 0;
+	positions[0] = glm::vec4(-xDim/2,-yDim/2,zDim/2,1);
+	positions[1] = glm::vec4(-xDim/2,yDim/2,zDim/2,1);
+	positions[2] = glm::vec4(xDim/2,yDim/2,zDim/2,1);
+	positions[3] = glm::vec4(xDim/2,-yDim/2,zDim/2,1);
+	positions[4] = glm::vec4(-xDim/2,-yDim/2,-zDim/2,1);
+	positions[5] = glm::vec4(-xDim/2,yDim/2,-zDim/2,1);
+	positions[6] = glm::vec4(xDim/2,yDim/2,-zDim/2,1);
+	positions[7] = glm::vec4(xDim/2,-yDim/2,-zDim/2,1);		
+	quad( 1, 0, 3, 2 ,color);
+	quad( 2, 3, 7, 6 ,color);
+	quad( 3, 0, 4, 7 ,color);
+	quad( 6, 5, 1, 2 ,color);
+	quad( 4, 5, 6, 7 ,color);
+	quad( 5, 4, 0, 1 ,color);
 }
 
 
+void vbodyshape(){
+	// number of vertices : 72
+	tri_idx = 0;
+	positions[0] = glm::vec4(-2,-1,0,1);
+	positions[1] = glm::vec4(2,-1,0,1);
+	positions[2] = glm::vec4(2,1,0,1);
+	positions[3] = glm::vec4(-2,1,0,1);
+	positions[4] = glm::vec4(-2,-1,-5,1);
+	positions[5] = glm::vec4(2,-1,-5,1);
+	positions[6] = glm::vec4(2,1,-5,1);
+	positions[7] = glm::vec4(-2,1,-5,1);
+	positions[8] = glm::vec4(0,0,2,1);
+	positions[9] = glm::vec4(0,0,-7,1);		
+	cuboid(0,1,2,3,4,5,6,7,blue);
+	quadpyramid(0,1,2,3,8,red);
+	quadpyramid(4,5,6,7,9,red);
+}
 //-----------------------------------------------------------------
 
+
+void podshape(int xDim,int yDim, int zDim, glm::vec4 color){
+	// number of vertices : 36+12
+	tri_idx = 0;
+	positions[0] = glm::vec4(0,0,0,1);
+	positions[1] = glm::vec4(xDim,0,0,1);
+	positions[2] = glm::vec4(0,0,zDim,1);
+	positions[3] = glm::vec4(0,yDim,0,1);
+	tripyramid(0,1,2,3,color);
+}
+
+
+// void pod2shape(){
+// 	// number of vertices : 36+12
+// 	tri_idx = 0;
+// 	positions[0] = glm::vec4(-0.2,-1,-3.0,1);
+// 	positions[1] = glm::vec4(-0.2,-1,-2.6,1);
+// 	positions[2] = glm::vec4(-0.2,-1.4,-2.6,1);
+// 	positions[3] = glm::vec4(-0.2,-1.4,-3.0,1);
+// 	positions[4] = glm::vec4(-3,-1,-3.0,1);
+// 	positions[5] = glm::vec4(-3,-1,-2.6,1);
+// 	positions[6] = glm::vec4(-3,-1.4,-2.6,1);
+// 	positions[7] = glm::vec4(-3,-1.4,-3.0,1);
+// 	cuboid(0,1,2,3,4,5,6,7,red);
+// 	positions[8] = glm::vec4(-3,-1,-2.6,1);
+// 	positions[9] = glm::vec4(-5,-1,-2.6,1);
+// 	positions[10] = glm::vec4(-4,-1,-3.6,1);
+// 	positions[11] = glm::vec4(-4,-5,-2.6,1);
+// 	tripyramid(8,9,10,11,green);
+// }
+
+
+// void pod3shape(){
+// 	// number of vertices : 36+12
+// 	tri_idx = 0;
+// 	positions[0] = glm::vec4(0.2,-1,-2.0,1);
+// 	positions[1] = glm::vec4(0.2,-1,-2.4,1);
+// 	positions[2] = glm::vec4(0.2,-1.4,-2.4,1);
+// 	positions[3] = glm::vec4(0.2,-1.4,-2.0,1);
+// 	positions[4] = glm::vec4(3,-1,-2.0,1);
+// 	positions[5] = glm::vec4(3,-1,-2.4,1);
+// 	positions[6] = glm::vec4(3,-1.4,-2.4,1);
+// 	positions[7] = glm::vec4(3,-1.4,-2.0,1);
+// 	cuboid(0,1,2,3,4,5,6,7,red);
+// 	positions[8] = glm::vec4(3,-1,-2.4,1);
+// 	positions[9] = glm::vec4(5,-1,-2.4,1);
+// 	positions[10] = glm::vec4(4,-1,-1.4,1);
+// 	positions[11] = glm::vec4(4,-5,-2.4,1);
+// 	tripyramid(8,9,10,11,green);
+// }
+
+
+// void pod4shape(){
+// 	// number of vertices : 36+12
+// 	tri_idx = 0;
+// 	positions[0] = glm::vec4(0.2,-1,-3.0,1);
+// 	positions[1] = glm::vec4(0.2,-1,-2.6,1);
+// 	positions[2] = glm::vec4(0.2,-1.4,-2.6,1);
+// 	positions[3] = glm::vec4(0.2,-1.4,-3.0,1);
+// 	positions[4] = glm::vec4(3,-1,-3.0,1);
+// 	positions[5] = glm::vec4(3,-1,-2.6,1);
+// 	positions[6] = glm::vec4(3,-1.4,-2.6,1);
+// 	positions[7] = glm::vec4(3,-1.4,-3.0,1);
+// 	cuboid(0,1,2,3,4,5,6,7,red);
+// 	positions[8] = glm::vec4(3,-1,-2.6,1);
+// 	positions[9] = glm::vec4(5,-1,-2.6,1);
+// 	positions[10] = glm::vec4(4,-1,-3.6,1);
+// 	positions[11] = glm::vec4(4,-5,-2.6,1);
+// 	tripyramid(8,9,10,11,green);
+// }
+
+
+// void neckshape(){
+// 	tri_idx = 0;
+// 	positions[0] = glm::vec4(-0.2,1.0,-1.0,1);
+// 	positions[1] = glm::vec4(0.2,1.0,-1.0,1);
+// 	positions[2] = glm::vec4(0.2,1.4,-1.0,1);
+// 	positions[3] = glm::vec4(-0.2,1.4,-1.0,1);
+// 	positions[4] = glm::vec4(-0.2,1.0,-1.2,1);
+// 	positions[5] = glm::vec4(0.2,1.0,-1.2,1);
+// 	positions[6] = glm::vec4(0.2,1.4,-1.2,1);
+// 	positions[7] = glm::vec4(-0.2,1.4,-1.2,1);
+// 	cuboid(0,1,2,3,4,5,6,7,red);
+// }
+
+// void headshape(){
+// 	//number of vertices : 54
+// 	tri_idx = 0;
+// 	positions[0] = glm::vec4(-0.6,1.4,-1.0,1);
+// 	positions[1] = glm::vec4(0.6,1.4,-1.0,1);
+// 	positions[2] = glm::vec4(0.6,2.6,-1.0,1);
+// 	positions[3] = glm::vec4(-0.6,2.6,-1.0,1);
+// 	positions[4] = glm::vec4(-0.6,1.4,-1.2,1);
+// 	positions[5] = glm::vec4(0.6,1.4,-1.2,1);
+// 	positions[6] = glm::vec4(0.6,2.6,-1.2,1);
+// 	positions[7] = glm::vec4(-0.6,2.6,-1.2,1);
+// 	cuboid(0,1,2,3,4,5,6,7,red);
+// 	positions[8] = glm::vec4(0,2.0,-0.5,1);
+// 	quadpyramid(0,1,2,3,8,blue);
+	
+// }
 void initBuffersGL(void)
 {
 
@@ -105,44 +281,99 @@ void initBuffersGL(void)
 	vPosition = glGetAttribLocation( shaderProgram, "vPosition" );
 	vColor = glGetAttribLocation( shaderProgram, "vColor" ); 
 	uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
+	//vulture droid ------------------------------------------------------------------------//
+	vbodyshape();
+	vbody = new csX75::HNode(NULL,72,v_positions,v_colors,sizeof(v_positions[0])*72,sizeof(v_positions[0])*72);
 
-	colorcube(1.5,3.0);
-	chest = new csX75::HNode(NULL,num_vertices,v_positions,v_colors,sizeof(v_positions),sizeof(v_colors));
-	chest->change_parameters(0,0,0,0,0,0);
+	//pod1
+	colorcube(-2.8,-0.4,0.4,red);
+	vpod1arm = new csX75::HNode(vbody,36,v_positions,v_colors,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36);
+	vpod1arm->change_parameters(-0.2,-1,-2.4,0,0,0);
 
-	colorcube(0.5,2.0);
-	rightUpperArm = new csX75::HNode(chest,num_vertices,v_positions,v_colors,sizeof(v_positions),sizeof(v_colors));
-	rightUpperArm->change_parameters(1.6,3.1,0,0,0,0);
+	podshape(-2,-5,1,green);
+	vpod1 = new csX75::HNode(vpod1arm,12,v_positions,v_colors,sizeof(v_positions[0])*12,sizeof(v_positions[0])*12);
+	vpod1->change_parameters(-2.8,0,0,0,0,0);
 
-	rightLowerArm = new csX75::HNode(rightUpperArm, num_vertices, v_positions, v_colors, sizeof(v_positions), sizeof(v_colors));
-	rightLowerArm->change_parameters(0,2.1,0,0,0,0);
+	//pod2
+	colorcube(-2.8,-0.4,-0.4,red);
+	vpod2arm = new csX75::HNode(vbody,36,v_positions,v_colors,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36);
+	vpod2arm->change_parameters(-0.2,-1,-2.6,0,0,0);
 
-	leftUpperArm = new csX75::HNode(chest,num_vertices,v_positions,v_colors,sizeof(v_positions),sizeof(v_colors));
-	leftUpperArm->change_parameters(-0.6,3.1,0,0,0,0);	
+	podshape(-2,-5,-1,green);
+	vpod2 = new csX75::HNode(vpod2arm,12,v_positions,v_colors,sizeof(v_positions[0])*12,sizeof(v_positions[0])*12);
+	vpod2->change_parameters(-2.8,0,0,0,0,0);
 
-	leftLowerArm = new csX75::HNode(leftUpperArm,num_vertices,v_positions,v_colors,sizeof(v_positions),sizeof(v_colors));
-	leftLowerArm->change_parameters(0,2.1,0,0,0,0);	
+	//pod3
+	colorcube(2.8,-0.4,0.4,red);
+	vpod3arm = new csX75::HNode(vbody,36,v_positions,v_colors,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36);
+	vpod3arm->change_parameters(0.2,-1,-2.4,0,0,0);
 
-	leftUpperLeg = new csX75::HNode(chest,num_vertices,v_positions,v_colors,sizeof(v_positions),sizeof(v_colors));
-	leftUpperLeg->change_parameters(0,0,0,0,0,0);
+	podshape(2,-5,1,green);
+	vpod3 = new csX75::HNode(vpod3arm,12,v_positions,v_colors,sizeof(v_positions[0])*12,sizeof(v_positions[0])*12);
+	vpod3->change_parameters(2.8,0,0,0,0,0);
 
-	leftLowerLeg = new csX75::HNode(leftUpperLeg,num_vertices,v_positions,v_colors,sizeof(v_positions),sizeof(v_colors));;
-	leftLowerLeg->change_parameters(0,2.1,0,0,0,0);
+	//pod4
+	colorcube(2.8,-0.4,-0.4,red);
+	vpod4arm = new csX75::HNode(vbody,36,v_positions,v_colors,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36);
+	vpod4arm->change_parameters(0.2,-1,-2.6,0,0,0);
+
+	podshape(2,-5,-1,green);
+	vpod4 = new csX75::HNode(vpod4arm,12,v_positions,v_colors,sizeof(v_positions[0])*12,sizeof(v_positions[0])*12);
+	vpod4->change_parameters(2.8,0,0,0,0,0);
+
+
+	centercube(0.4,0.8,0.2,red);
+	vneck = new csX75::HNode(vbody,36,v_positions,v_colors,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36);
+	vneck->change_parameters(0,1.4,-2,0,0,0);
 	
-	leftUpperLeg->change_parameters(0.5,-0.1,0,0,0,180);
+	centercube(1.2,1.2,0.2,blue);
+	vhead = new csX75::HNode(vneck,36,v_positions,v_colors,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36);
+	vhead->change_parameters(0,1.0,0,0,0,0);
+	// neckshape();
+	// vneck = new csX75::HNode(vbody,36,v_positions,v_colors,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36);
+
+	// headshape();
+	// vhead = new csX75::HNode(vneck,54,v_positions,v_colors,sizeof(v_positions[0])*54,sizeof(v_positions[0])*54);
+
+
+	//c3po ----------------------------------------------------------------------------------//
+	// colorcube(1.5,3.0,1,red);
+	// chest = new csX75::HNode(NULL,num_vertices,v_positions,v_colors,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36);
+	// chest->change_parameters(0,0,0,0,0,0);
+
+	// colorcube(0.5,2.0,1,red);
+	// rightUpperArm = new csX75::HNode(chest,num_vertices,v_positions,v_colors,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36);
+	// rightUpperArm->change_parameters(1.6,3.1,0,0,0,0);
+
+	// rightLowerArm = new csX75::HNode(rightUpperArm, num_vertices, v_positions, v_colors, sizeof(v_positions[0])*36, sizeof(v_positions[0])*36);
+	// rightLowerArm->change_parameters(0,2.1,0,0,0,0);
+
+	// leftUpperArm = new csX75::HNode(chest,num_vertices,v_positions,v_colors,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36);
+	// leftUpperArm->change_parameters(-0.6,3.1,0,0,0,0);	
+
+	// leftLowerArm = new csX75::HNode(leftUpperArm,num_vertices,v_positions,v_colors,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36);
+	// leftLowerArm->change_parameters(0,2.1,0,0,0,0);	
+
+	// leftUpperLeg = new csX75::HNode(chest,num_vertices,v_positions,v_colors,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36);
+	// leftUpperLeg->change_parameters(0,0,0,0,0,0);
+
+	// leftLowerLeg = new csX75::HNode(leftUpperLeg,num_vertices,v_positions,v_colors,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36);;
+	// leftLowerLeg->change_parameters(0,2.1,0,0,0,0);
 	
-	rightUpperLeg = new csX75::HNode(chest,num_vertices,v_positions,v_colors,sizeof(v_positions),sizeof(v_colors));
-	rightUpperLeg->change_parameters(0,0,0,0,0,0);
-
-	rightLowerLeg = new csX75::HNode(rightUpperLeg,num_vertices,v_positions,v_colors,sizeof(v_positions),sizeof(v_colors));;
-	rightLowerLeg->change_parameters(0,2.1,0,0,0,0);
-
-	rightUpperLeg->change_parameters(1.5,-0.1,0,0,0,180);
+	// leftUpperLeg->change_parameters(0.5,-0.1,0,0,0,180);
 	
-	colorcube(1.5,1);
-	head = new csX75::HNode(chest,num_vertices,v_positions,v_colors,sizeof(v_positions),sizeof(v_colors));
-	head->change_parameters(0,3.1,0,0,0,0);
+	// rightUpperLeg = new csX75::HNode(chest,num_vertices,v_positions,v_colors,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36);
+	// rightUpperLeg->change_parameters(0,0,0,0,0,0);
 
+	// rightLowerLeg = new csX75::HNode(rightUpperLeg,num_vertices,v_positions,v_colors,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36);;
+	// rightLowerLeg->change_parameters(0,2.1,0,0,0,0);
+
+	// rightUpperLeg->change_parameters(1.5,-0.1,0,0,0,180);
+	
+	// colorcube(1.5,1,1,red);
+	// head = new csX75::HNode(chest,num_vertices,v_positions,v_colors,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36);
+	// head->change_parameters(0,3.1,0,0,0,0);
+	//c3po ----------------------------------------------------------------------------//
 }
 
 void renderGL(void)
@@ -172,7 +403,7 @@ void renderGL(void)
 
 	matrixStack.push_back(view_matrix);
 
-	chest->render_tree();
+	vbody->render_tree();
 }
 
 int main(int argc, char** argv)
