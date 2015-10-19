@@ -44,8 +44,10 @@ namespace csX75
 		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, GL_TRUE);
 		// mode to select the object one wishes to interact with
-		else if (key == GLFW_KEY_C && action == GLFW_PRESS)
+		else if (key == GLFW_KEY_C && action == GLFW_PRESS){
 			objectSelected = 1;
+			std::cout << "Selected c3po" << std::endl;
+		}
 		//c3po controls ---------------------------------------------------------------//
 		else if(key == GLFW_KEY_D && action == GLFW_PRESS && objectSelected == 1){
 			chest->inc_tx(1);
