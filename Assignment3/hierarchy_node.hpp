@@ -25,6 +25,7 @@ namespace csX75	 {
 
 		std::size_t vertex_buffer_size;
 		std::size_t color_buffer_size;
+		std::size_t normal_buffer_size;
 
 		GLuint num_vertices;
 		GLuint vao,vbo;
@@ -39,7 +40,7 @@ namespace csX75	 {
 		void update_matrices();
 
 	  public:
-		HNode (HNode*, GLuint, glm::vec4*, glm::vec4*, std::size_t, std::size_t);
+		HNode (HNode*, GLuint, glm::vec4*, glm::vec4*, glm::vec4*, std::size_t, std::size_t, std::size_t);
 		//HNode (HNode* , glm::vec4*,  glm::vec4*,GLfloat,GLfloat,GLfloat,GLfloat,GLfloat,GLfloat);
 
 		void add_child(HNode*);

@@ -8,6 +8,7 @@ extern csX75::HNode* chest, *head, *rightUpperArm, *rightLowerArm, *leftUpperArm
 extern csX75::HNode* vbody, *vneck, *vhead, *vpod1arm, *vpod1, *vpod2arm, *vpod2, *vpod3arm, *vpod3, *vpod4arm, *vpod4;
 extern int objectSelected;
 extern int podno, podarmno, podselected;
+extern int light1, light2;
 
 namespace csX75
 {
@@ -48,6 +49,30 @@ namespace csX75
 			objectSelected = 1;
 			std::cout << "Selected c3po" << std::endl;
 		}
+
+		else if (key == GLFW_KEY_F1 && action == GLFW_PRESS){
+			if(light1 == 0){
+				light1 = 1;
+				std::cout << "Light 1 turned on" << std::endl;
+			}
+			else{
+				light1 = 0;
+				std::cout << "Light 1 turned off" << std::endl;
+			}	
+		}
+
+		else if (key == GLFW_KEY_F2 && action == GLFW_PRESS){
+			if(light2 == 0){
+				light2 = 1;
+				std::cout << "Light 2 turned on" << std::endl;
+			}
+			else{
+				light2 = 0;
+				std::cout << "Light 2 turned off" << std::endl;
+			}	
+		}
+
+
 		//c3po controls ---------------------------------------------------------------//
 		else if(key == GLFW_KEY_D && action == GLFW_PRESS && objectSelected == 1){
 			chest->inc_tx(1);

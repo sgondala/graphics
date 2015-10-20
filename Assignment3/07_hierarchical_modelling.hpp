@@ -43,11 +43,12 @@ bool solid=true;
 //Enable/Disable perspective view
 bool enable_perspective=false;
 //Shader program attribs
-GLuint vPosition,vColor;
+GLuint vPosition,vColor,vNormal;
 
 //global matrix stack for hierarchical modelling
 std::vector<glm::mat4> matrixStack;
 int objectSelected, podno = -1, podarmno = 1, podselected = 0;
+int light1 = 0,light2 = 0;
 csX75::HNode* root_node;
 csX75::HNode* curr_node;
 //c3po------------------------------------------//
