@@ -304,6 +304,14 @@ void initBuffersGL(void)
 	head = new csX75::HNode(chest,num_vertices,v_positions,v_colors, v_normals, sizeof(v_positions[0])*36,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36);
 	head->change_parameters(0,3.1,0,0,0,0);
 	//c3po ----------------------------------------------------------------------------//
+
+
+	glm::vec4 alpha[4];
+	alpha[0] = glm::vec4(1,1,0,1);
+	alpha[1] = glm::vec4(1,-1,0,1);
+	alpha[2] = glm::vec4(-1,-1,0,1);
+	alpha[3] = glm::vec4(-1,1,0,1);
+	ground = new csX75::plane(alpha);
 }
 
 void renderGL(void)
@@ -339,8 +347,9 @@ void renderGL(void)
 
 	matrixStack.push_back(view_matrix);
 
-	vbody->render_tree();
-	chest->render_tree();
+	// vbody->render_tree();
+	// chest->render_tree();
+	ground->render(&view_matrix);
 }
 
 int main(int argc, char** argv)

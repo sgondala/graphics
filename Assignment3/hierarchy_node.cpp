@@ -60,6 +60,78 @@ namespace csX75
 		update_matrices();
 	}
 
+		plane::plane(glm::vec4 v0, glm::vec4 v1, glm::vec4 v2, glm::vec4 v3){
+
+		vertices = new glm::vec4[6];
+		colors = new glm::vec4[6];
+
+		vertices[0] = v0;
+		vertices[1] = v1;
+		vertices[2] = v2;
+		vertices[3] = v0;
+		vertices[4] = v2;
+		vertices[5] = v3;
+
+		for(int i=0; i<6; i++){
+			colors[i] = glm::vec4(1.0,0,0,1);
+		}
+
+		glGenVertexArrays(1,&vao);
+		glGenBuffers(1,&vbo);
+		glBindVertexArray(vao);
+		glBindBuffer(GL_ARRAY_BUFFER,vbo);
+
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0])*6 + sizeof(colors[0])*6, NULL, GL_STATIC_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices[0])*6, vertices);
+		glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices[0])*6, sizeof(colors[0])*6, colors);
+
+		glEnableVertexAttribArray(vPosition);
+		glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+
+		glEnableVertexAttribArray(vColor);
+		glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(vertices[0])*6));
+	}
+
+	plane::plane(glm::vec4* alpha){
+		vertices = new glm::vec4[6];
+		colors = new glm::vec4[6];
+		normals = new glm::vec4[6];
+
+		vertices[0] = alpha[0];
+		vertices[1] = alpha[1];
+		vertices[2] = alpha[2];
+		vertices[3] = alpha[0];
+		vertices[4] = alpha[2];
+		vertices[5] = alpha[3];
+
+		for(int i=0; i<6; i++){
+			colors[i] = glm::vec4(1.0,0,0,1);
+		}
+
+		for(int i=0; i<6; i++){
+			normals[i] = glm::vec4(0,0,-1,1);
+		}
+
+		glGenVertexArrays(1,&vao);
+		glGenBuffers(1,&vbo);
+		glBindVertexArray(vao);
+		glBindBuffer(GL_ARRAY_BUFFER,vbo);
+
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0])*6 + sizeof(colors[0])*6 + sizeof(normals[0])*6, NULL, GL_STATIC_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices[0])*6, vertices);
+		glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices[0])*6, sizeof(colors[0])*6, colors);
+		glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices[0])*6 + sizeof(colors[0])*6, sizeof(normals[0])*6, normals);
+
+		glEnableVertexAttribArray(vPosition);
+		glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+
+		glEnableVertexAttribArray(vColor);
+		glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(vertices[0])*6));
+	
+		glEnableVertexAttribArray(vNormal);
+		glVertexAttribPointer(vNormal, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET( sizeof(vertices[0])*6 + sizeof(colors[0])*6));
+	}
+
 	void HNode::update_matrices(){
 
 		rotation = glm::rotate(glm::mat4(1.0f), glm::radians(rx), glm::vec3(1.0f,0.0f,0.0f));
@@ -106,6 +178,15 @@ namespace csX75
 		// for memory 
 		delete ms_mult;
 
+	}
+
+	void plane::render(glm::mat4* modelViewMatrix){
+		// std::cout<<"!"<<std::endl;
+		// glm::mat4 alpha(1.0f);
+		glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(*modelViewMatrix));
+		glBindVertexArray(vao);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		// std::cout<<"#!"<<std::endl;
 	}
 
 	void HNode::render_tree(){

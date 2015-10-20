@@ -77,5 +77,6 @@ csX75::HNode* vpod3;
 csX75::HNode* vpod4arm;
 csX75::HNode* vpod4;
 //-------------------------------------------------------------------------
+csX75::plane* ground;
 
 #endif

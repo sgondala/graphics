@@ -58,6 +58,18 @@ namespace csX75	 {
 		void inc_tz(bool);		
 	};
 
+	class plane{
+		GLuint vao,vbo;
+		glm::vec4* vertices;
+		glm::vec4* colors;
+		glm::vec4* normals;
+
+	public:
+		plane(glm::vec4, glm::vec4, glm::vec4, glm::vec4);
+		plane(glm::vec4*);
+		void render(glm::mat4*);
+	};
+
 	glm::mat4* multiply_stack(std::vector <glm::mat4> );
 };	
 
