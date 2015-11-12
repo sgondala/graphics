@@ -57,7 +57,6 @@ glm::vec4 colors[100] = {
 	glm::vec4(1.0, 0.0, 0.0, 1.0),
 	glm::vec4(1.0, 0.0, 0.0, 1.0),
 	glm::vec4(1.0, 0.0, 0.0, 1.0)
-
 };
 
 glm::vec2 t_coords[4] ={
@@ -347,8 +346,7 @@ void initBuffersGL(void)
 	box =  new csX75::HNode(NULL,num_vertices,v_positions,v_colors, v_normals, tex_coords, sizeof(v_positions[0])*36,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36, sizeof(tex_coords[0])*36);
 }
 
-void renderGL(void)
-{
+void renderGL(void){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	matrixStack.clear();
@@ -403,14 +401,9 @@ void renderGL(void)
 
 	chest->render_tree();
 
-	// tex=LoadTexture("images/index.bmp",1920,1200);
- //  	glBindTexture(GL_TEXTURE_2D, tex);
-
-	// box->render_tree();
 }
 
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv){
 	//! The pointer to the GLFW window
 	GLFWwindow* window;
 
@@ -469,18 +462,14 @@ int main(int argc, char** argv)
 	initBuffersGL();
 
 	// Loop until the user closes the window
-	while (glfwWindowShouldClose(window) == 0)
-		{
-			 
-			// Render here
-			renderGL();
-
-			// Swap front and back buffers
-			glfwSwapBuffers(window);
-			
-			// Poll for and process events
-			glfwPollEvents();
-		}
+	while (glfwWindowShouldClose(window) == 0){
+		// Render here
+		renderGL();
+		// Swap front and back buffers
+		glfwSwapBuffers(window);
+		// Poll for and process events
+		glfwPollEvents();
+	}
 	
 	glfwTerminate();
 	return 0;

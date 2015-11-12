@@ -15,8 +15,7 @@ extern bool enable_perspective;
 namespace csX75
 {
 	//! Initialize GL State
-	void initGL(void)
-	{
+	void initGL(void){
 		//Set framebuffer clear color
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		//Set depth buffer furthest depth
@@ -47,6 +46,14 @@ namespace csX75
 		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, GL_TRUE);
 		// camera controls ------------------------------------------------------------//
+
+		if(key == GLFW_KEY_S && action == GLFW_PRESS && mods== GLFW_MOD_CONTROL){
+			std::cout<<light1<<" "<<light2<<" "<<spotlight<<" "<<textureenable<<std::endl;
+			chest->printAllParams();
+			std::cout<<std::endl;
+			vbody->printAllParams();
+			std::cout<<std::endl;
+		}
 
 		else if(key == GLFW_KEY_F6 && action == GLFW_PRESS){
 			if(!enable_perspective){
@@ -417,44 +424,6 @@ namespace csX75
 			std::cout<<"vulture  Selected decreasingZ"<<std::endl;
 		}
 
-		//vulture droid controls-------------------------------------------------------//
-
 	}
 };
 	
-
-	// else if (key == GLFW_KEY_1 && action == GLFW_PRESS && objectSelected == 1)
-		//   curr_node = node1;  
-		// else if (key == GLFW_KEY_2 && action == GLFW_PRESS && objectSelected == 1)
-		//   curr_node = node2; 
-		// else if (key == GLFW_KEY_3 && action == GLFW_PRESS && objectSelected == 1)
-		//   curr_node = node3; 
-		// else if (key == GLFW_KEY_LEFT && action == GLFW_PRESS && objectSelected == 1)
-		//   curr_node->dec_ry();
-		// else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS && objectSelected == 1)
-		//   curr_node->inc_ry();
-		// else if (key == GLFW_KEY_UP && action == GLFW_PRESS && objectSelected == 1)
-		//   curr_node->dec_rx();
-		// else if (key == GLFW_KEY_DOWN && action == GLFW_PRESS && objectSelected == 1)
-		//   curr_node->inc_rx();
-		// else if (key == GLFW_KEY_PAGE_UP && action == GLFW_PRESS && objectSelected == 1)
-		//   curr_node->dec_rz();
-		// else if (key == GLFW_KEY_PAGE_DOWN && action == GLFW_PRESS && objectSelected == 1)
-		//   curr_node->inc_rz();
-		// else if (key == GLFW_KEY_P && action == GLFW_PRESS && objectSelected == 1)
-		//   enable_perspective = !enable_perspective;   
-		// else if (key == GLFW_KEY_A  && action == GLFW_PRESS && objectSelected == 1)
-		//   c_yrot -= 1.0;
-		// else if (key == GLFW_KEY_D  && action == GLFW_PRESS && objectSelected == 1)
-		//   c_yrot += 1.0;
-		// else if (key == GLFW_KEY_W  && action == GLFW_PRESS && objectSelected == 1)
-		//   c_xrot -= 1.0;
-		// else if (key == GLFW_KEY_S  && action == GLFW_PRESS && objectSelected == 1)
-		//   c_xrot += 1.0;        
-		// else if (key == GLFW_KEY_Q  && action == GLFW_PRESS && objectSelected == 1)
-		//   c_zrot -= 1.0;
-		// else if (key == GLFW_KEY_E  && action == GLFW_PRESS && objectSelected == 1)
-		//   c_zrot += 1.0;   
-		
-
-

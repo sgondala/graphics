@@ -19,8 +19,7 @@ namespace csX75	 {
 
 	// A simple class that represents a node in the hierarchy tree
 	class HNode {
-		//glm::vec4 * vertices;
-		//glm::vec4 * colors;
+
 		GLfloat tx,ty,tz,rx,ry,rz;
 
 		std::size_t vertex_buffer_size;
@@ -33,7 +32,6 @@ namespace csX75	 {
 
 		glm::mat4 rotation;
 		glm::mat4 translation;
-		// glm::mat4 scale;
 		
 		std::vector<HNode*> children;
 		HNode* parent;
@@ -42,11 +40,9 @@ namespace csX75	 {
 
 	  public:
 		HNode (HNode*, GLuint, glm::vec4*, glm::vec4*, glm::vec4*, glm::vec2*, std::size_t, std::size_t, std::size_t, std::size_t);
-		//HNode (HNode* , glm::vec4*,  glm::vec4*,GLfloat,GLfloat,GLfloat,GLfloat,GLfloat,GLfloat);
-		// void buffer_fill();
 		void add_child(HNode*);
 		void render();
-		void change_parameters(GLfloat,GLfloat,GLfloat,GLfloat,GLfloat,GLfloat); //,GLfloat,GLfloat,GLfloat);
+		void change_parameters(GLfloat,GLfloat,GLfloat,GLfloat,GLfloat,GLfloat); 
 		void render_tree();
 		void inc_rx();
 		void inc_ry();
@@ -56,7 +52,10 @@ namespace csX75	 {
 		void dec_rz();
 		void inc_tx(bool);
 		void inc_ty(bool);
-		void inc_tz(bool);		
+		void inc_tz(bool);
+		std::vector<GLfloat> getThisParams();
+		void printThisParams();
+		void printAllParams();
 	};
 
 	glm::mat4* multiply_stack(std::vector <glm::mat4> );

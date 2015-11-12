@@ -16,8 +16,6 @@ namespace csX75
 		normal_buffer_size = n_size;
 		texture_buffer_size = t_size;
 
-		// set parent
-
 		if(a_parent == NULL){
 			parent = NULL;
 		}
@@ -26,15 +24,8 @@ namespace csX75
 			parent->add_child(this);
 		}
 
-		//initial parameters are set to 0;
-
 		tx=ty=tz=rx=ry=rz=0;
 		update_matrices();
-	// }
-	// 	// sx=sy=sz=1;
-	// void HNode::buffer_fill()
-	// {	
-		// initialize vao and vbo of the object;
 
 		//Ask GL for a Vertex Attribute Objects (vao)
 		glGenVertexArrays (1, &vao);
@@ -64,10 +55,6 @@ namespace csX75
 
 		glEnableVertexAttribArray( texCoord );
 		glVertexAttribPointer( texCoord, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(vertex_buffer_size+color_buffer_size+normal_buffer_size));
-
-
-
-
 	}
 
 	void HNode::update_matrices(){
@@ -77,13 +64,10 @@ namespace csX75
 		rotation = glm::rotate(rotation, glm::radians(rz), glm::vec3(0.0f,0.0f,1.0f));
 
 		translation = glm::translate(glm::mat4(1.0f),glm::vec3(tx,ty,tz));
-		// scale = glm::scale(glm::mat4(1.0f),glm::vec3(sx,sy,sz));
-
 	}
 
 	void HNode::add_child(HNode* a_child){
 		children.push_back(a_child);
-
 	}
 
 	void HNode::change_parameters(GLfloat atx, GLfloat aty, GLfloat atz, 
@@ -95,9 +79,6 @@ namespace csX75
 		rx = arx;
 		ry = ary;
 		rz = arz;
-		// sx = asx;
-		// sy = asy;
-		// sz = asz;
 		update_matrices();
 	}
 
@@ -166,32 +147,17 @@ namespace csX75
 	}
 
 	void HNode::inc_tx(bool direction){
-		if(direction){
-			tx++;
-		}
-		else{
-			tx--;
-		}
+		(direction)? tx++ : tx-- ;
 		update_matrices();
 	}
 
 	void HNode::inc_ty(bool direction){
-		if(direction){
-			ty++;
-		}
-		else{
-			ty--;
-		}
+		(direction)? ty++ : ty-- ;
 		update_matrices();
 	}
 
 	void HNode::inc_tz(bool direction){
-		if(direction){
-			tz++;
-		}
-		else{
-			tz--;
-		}
+		(direction)? tz++ : tz-- ;
 		update_matrices();
 	}
 
@@ -205,6 +171,24 @@ namespace csX75
 		}	
 
 		return mult;
+	}
+
+	void HNode::printThisParams(){
+		if(parent==NULL){
+			std::cout<< tx <<" ";
+			std::cout<< ty <<" ";
+			std::cout<< tz <<" ";
+		}
+		std::cout<< rx <<" ";
+		std::cout<< ry <<" ";
+		std::cout<< rz <<" ";
+	}
+
+	void HNode::printAllParams(){
+		printThisParams();
+		for(int i=0; i<children.size(); i++){
+			children[i]->printAllParams();
+		}
 	}
 
 }
