@@ -1,0 +1,63 @@
+Report:
+https://www.cse.iitb.ac.in/~sgondala/report/report3.html
+
+
+
+Instructions to interact:
+
+Lights:
+F1 : to turn on and off light 1
+F2 : to turn on and off light 2
+F3 : to turn on and off spotlight
+
+F4: to select the humanoid robot
+
+	Use the following commands for controlling the humanoid
+		Translating whole body  - 
+		W,S - Move it in +y and -y
+		D,A - Move it in +x and -X
+
+		Selecting parts - 
+		H - To select head as current node
+		J - To select lower left hand as current node
+		Shift + J - To select upper left hand as current node
+		K - To select lower right hand as current node
+		Shift + K - To select upper right hand as current node
+		N - To select lower left leg as current node
+		Shift + N - To select upper left leg as current node
+		M - To select lower right leg as current node
+		Shift + M - To select upper right leg as current node
+
+		Rotating a part - 
+		Up and Down - About X
+		Left and Right - About Y
+		Page Up and Page Down - About Z
+F5 : to select the non-humanoid robot
+	Use the following commands for controlling the humanoid
+		Translating whole body  - 
+		W,S - Move it in +y and -y
+		D,A - Move it in +x and -X
+		by default pod arm 1 is selected
+			To select pod , press P
+				To select within pod, press 1,2,3,4
+				To move pod suitably
+					press SPACE and MINUS
+			To select podarm, press P again
+				To select within podarms, press 1,2,3,4
+				To move pod arm suitably
+					press SPACE and MINUS
+		Selecting parts - 
+		U - up the neck
+		B - lower the neck
+		R - move head towards right
+		L - move head towards left
+F6 : to enter/exit perspective mode
+	Use the following keys to navigate in the perspective mode
+		W,S 				- move along Y
+		A,D 				- move along X
+		Q,E 				- move along Z
+		UP,DOWN 			- rotate along X
+		LEFT,RIGHT 			- rotate along Y
+		PAGE_UP,PAGE_DOWN	- rotate along Z
+
+F7: to on/off texture mode

@@ -3,7 +3,7 @@ CC=g++
 OPENGLLIB= -lGL
 GLEWLIB= -lGLEW
 GLFWLIB = -lglfw3 -lXxf86vm -lX11 -lpthread -lXrandr -lXinerama -lXi -lXcursor
-LIBS=$(OPENGLLIB) $(GLEWLIB) $(GLFWLIB)
+LIBS=$(OPENGLLIB) $(GLEWLIB) $(GLFWLIB) -ldl
 LDFLAGS=-L/usr/local/lib 
 CPPFLAGS=-I/usr/local/include -I./
 
