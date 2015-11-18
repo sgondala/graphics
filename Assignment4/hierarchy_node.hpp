@@ -21,7 +21,7 @@ namespace csX75	 {
 	class HNode {
 
 		GLfloat tx,ty,tz,rx,ry,rz;
-
+		std::string name;
 		std::size_t vertex_buffer_size;
 		std::size_t color_buffer_size;
 		std::size_t normal_buffer_size;
@@ -54,8 +54,10 @@ namespace csX75	 {
 		void inc_ty(bool);
 		void inc_tz(bool);
 		std::vector<GLfloat> getThisParams();
+		void printParamsToTerm();
 		void printThisParams();
 		void printAllParams();
+		int setParams(double*,int);
 	};
 
 	glm::mat4* multiply_stack(std::vector <glm::mat4> );

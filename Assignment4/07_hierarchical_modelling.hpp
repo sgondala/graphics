@@ -49,6 +49,10 @@ GLuint vPosition,vColor,vNormal, texCoord;
 std::vector<glm::mat4> matrixStack;
 int objectSelected, podno = -1, podarmno = 1, podselected = 0;
 int light1 = 0,light2 = 0, spotlight = 1, textureenable = 0;
+int playback = 0;
+int reloadmovie = 0;
+int steps = 3;
+std::string current[3],next[3];
 csX75::HNode* root_node;
 csX75::HNode* curr_node;
 //c3po------------------------------------------//

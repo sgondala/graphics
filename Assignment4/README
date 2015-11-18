@@ -1,6 +1,18 @@
 Report:
 https://www.cse.iitb.ac.in/~sgondala/report/report3.html
 
+control to capture the keyframes:
+Ctrl + P 
+to play/resume and pause the keyframes
+
+Ctrl + R
+to reload the movie
+
+Ctrl + D
+to delete the contents of the keyframes.txt file
+
+
+
 
 
 Instructions to interact:

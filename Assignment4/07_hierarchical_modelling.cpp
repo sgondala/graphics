@@ -1,19 +1,3 @@
-/*
-	CSX75 Tutorial 3
-
-	Use the arrow keys and PgUp,PgDn, 
-	keys to make the arms move.
-
-	Use the keys 1,2 and 3 to switch between arms.
-
-	Modified from An Introduction to OpenGL Programming, 
-	Ed Angel and Dave Shreiner, SIGGRAPH 2013
-
-	Written by - 
-							 Harshavardhan Kode
-*/
-
-
 #include "07_hierarchical_modelling.hpp"
 #include "texture.hpp"
 #include "texture.cpp"
@@ -323,20 +307,20 @@ void initBuffersGL(void)
 	leftLowerArm->change_parameters(0,2.1,0,0,0,0);	
 
 	leftUpperLeg = new csX75::HNode(chest,num_vertices,v_positions,v_colors, v_normals, tex_coords, sizeof(v_positions[0])*36,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36, sizeof(tex_coords[0])*36);
-	leftUpperLeg->change_parameters(0,0,0,0,0,0);
+	leftUpperLeg->change_parameters(0.5,-0.1,0,0,0,180);
 
 	leftLowerLeg = new csX75::HNode(leftUpperLeg,num_vertices,v_positions,v_colors, v_normals, tex_coords, sizeof(v_positions[0])*36,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36, sizeof(tex_coords[0])*36);
 	leftLowerLeg->change_parameters(0,2.1,0,0,0,0);
 	
-	leftUpperLeg->change_parameters(0.5,-0.1,0,0,0,180);
+
 	
 	rightUpperLeg = new csX75::HNode(chest,num_vertices,v_positions,v_colors, v_normals, tex_coords, sizeof(v_positions[0])*36,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36, sizeof(tex_coords[0])*36);
-	rightUpperLeg->change_parameters(0,0,0,0,0,0);
+	rightUpperLeg->change_parameters(1.5,-0.1,0,0,0,180);
 
 	rightLowerLeg = new csX75::HNode(rightUpperLeg,num_vertices,v_positions,v_colors, v_normals, tex_coords, sizeof(v_positions[0])*36,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36, sizeof(tex_coords[0])*36);;
 	rightLowerLeg->change_parameters(0,2.1,0,0,0,0);
 
-	rightUpperLeg->change_parameters(1.5,-0.1,0,0,0,180);
+
 	
 	colorcube(1.5,1,1,red);
 	head = new csX75::HNode(chest,num_vertices,v_positions,v_colors, v_normals, tex_coords, sizeof(v_positions[0])*36,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36, sizeof(tex_coords[0])*36);
@@ -344,6 +328,11 @@ void initBuffersGL(void)
 	//c3po ----------------------------------------------------------------------------//
 	boundingbox(50,50,50,blue);
 	box =  new csX75::HNode(NULL,num_vertices,v_positions,v_colors, v_normals, tex_coords, sizeof(v_positions[0])*36,sizeof(v_positions[0])*36,sizeof(v_positions[0])*36, sizeof(tex_coords[0])*36);
+	// std::cout <<"initial parameter values\n";
+	// std::cout << "chestparams\n";
+	// chest->printParamsToTerm();
+	// std::cout << "vbodyparams\n";
+	// vbody->printParamsToTerm();
 }
 
 void renderGL(void){
@@ -393,13 +382,130 @@ void renderGL(void){
 
 	GLuint tex=LoadTexture("images/all1.bmp",256,256);
   	glBindTexture(GL_TEXTURE_2D, tex);
-
+  	
+  	// std::cout << "in renderer\n";
+  	// std::cout << "vbody params\n";
+  	// vbody->printParamsToTerm();
   	vbody->render_tree();
 	
 	tex=LoadTexture("images/all2.bmp",256,256);
   	glBindTexture(GL_TEXTURE_2D, tex);
+ //  	std::cout << "chest params\n";
+	// chest->printParamsToTerm();
+  	chest->render_tree();
 
-	chest->render_tree();
+}
+
+void stringToDoubleArray(std::string s,double* arr){
+	double val = 0;
+	int index = 0,pos = 1,dot = 0,dotcount = 1;
+	for(int i=0;i<s.size();i++){
+		if(s[i] == ' '){
+			// std::cout << "val" << val << std::endl;
+			if(pos == 1)arr[index] = val;
+			else arr[index] = -val;
+			val = 0;
+			index++;
+			pos = 1;
+			dot = 0;
+			dotcount = 1;
+		}
+		else if(s[i] == '-'){
+			pos = 0;
+		}
+		else if(s[i] == '.'){
+			dot = 1;
+		}
+		else{
+			if(dot == 0) val = val*10+(s[i]-'0');
+			else{
+				val = val + double(s[i]-'0')/pow(10.0,dotcount);
+				dotcount++;
+			}
+		}
+	}
+	if(pos == 1) arr[index] = val;
+	else arr[index] = -val;
+}
+
+void interpolate(std::string* current,std::string* next, int iter){
+	// std::cout << current[] << " " << next << std::endl;
+	int l[3];
+	for(int i=0;i<3;i++) l[i] = 0;
+	for(int i=0;i<3;i++){
+		// std::cout << "current" << i << ":" << current[i] << std::endl;
+		// std::cout << "next" << i << ":" << next[i] << std::endl;
+		for(int j=0;j<current[i].size();j++){
+			if(current[i][j] == ' ') l[i]++;
+		}
+		l[i]++;
+	}
+	for(int i=0;i<3;i++) std::cout << l[i] << " ";
+	std::cout << std::endl;
+	double a1[l[0]],a2[l[0]],b1[l[1]],b2[l[1]],b[l[1]],c1[l[2]],c2[l[2]],c[l[2]];
+	stringToDoubleArray(current[0],a1);
+	stringToDoubleArray(next[0],a2);
+	stringToDoubleArray(current[1],b1);
+	stringToDoubleArray(next[1],b2);
+	stringToDoubleArray(current[2],c1);
+	stringToDoubleArray(next[2],c2);
+	// std::cout << "c1:";
+	// for(int i=0;i<l[2];i++){
+	// 	std::cout << c1[i] << " ";
+	// }
+	// std::cout << std::endl;
+	// std::cout << "c2:";
+	// for(int i=0;i<l[2];i++){
+	// 	std::cout << c2[i] << " ";
+	// }
+	// std::cout << std::endl;
+
+	// for(int i=0;i<l[1];i++){
+	// 	std::istringstream  iss0(current[1]);
+	// 	std::istringstream  iss1(next[1]);
+	// 	iss0 >> b1[i];
+	// 	iss1 >> b2[i];
+	// }
+	// for(int i=0;i<l[2];i++){
+	// 	std::istringstream  iss0(current[2]);
+	// 	std::istringstream  iss1(next[2]);
+	// 	iss0 >> c1[i];
+	// 	iss1 >> c2[i];
+	// }
+	if(iter < steps/2){
+		light1 = a1[0];
+		light2 = a1[1];
+		spotlight = a1[2];
+		textureenable = a1[3];
+		enable_perspective = a1[4];
+	}
+	else{
+		light1 = a2[0];
+		light2 = a2[1];
+		spotlight = a2[2];
+		textureenable = a2[3];
+		enable_perspective = a2[4];
+	}
+	double r = double(iter)/double(steps);
+	// std::cout << "r:" << r << std::endl;
+	for(int i=0;i<l[1];i++){
+		b[i] = b1[i]*(1-r)+b2[i]*r;
+	}
+	for(int i=0;i<l[2];i++){
+		c[i] = c1[i]*(1-r)+c2[i]*r;
+	}
+	// std::cout << "b :";
+	// for(int i=0;i<l[1];i++){
+	// 	std::cout << b[i] << " ";
+	// }
+	// std::cout << std::endl;
+	// std::cout << "c :";
+	// for(int i=0;i<l[2];i++){
+	// 	std::cout << c[i] << " ";
+	// }
+	// std::cout << std::endl;
+	chest->setParams(b,0);
+	vbody->setParams(c,0);
 
 }
 
@@ -460,15 +566,67 @@ int main(int argc, char** argv){
 	//Initialize GL state
 	csX75::initGL();
 	initBuffersGL();
+	int firsttime = 1;
 
+	std::ifstream infile("keyframes.txt");
+	std::string current[3],next[3];
+	int iter=0;
+	double lastTime = glfwGetTime(), currentTime = glfwGetTime();
+	int framerate = 1;
 	// Loop until the user closes the window
 	while (glfwWindowShouldClose(window) == 0){
 		// Render here
-		renderGL();
-		// Swap front and back buffers
-		glfwSwapBuffers(window);
-		// Poll for and process events
-		glfwPollEvents();
+		if(reloadmovie == 1){
+			infile.close();
+			infile.open("keyframes.txt");
+			reloadmovie = 0;
+			firsttime = 1;
+		}
+		if(playback == 1){
+			currentTime = glfwGetTime();
+			if(currentTime - lastTime >= 1.0/framerate){
+				// std::cout << iter << std::endl;
+				if(iter == 0){
+					if(firsttime == 1){
+						for(int i=0;i<3;i++){
+							if(!std::getline(infile,next[i])){
+								playback = 0;
+								std::cout << "The movie ended\nPress ctrl+R to rewind\n";
+							}
+						}
+						firsttime = 0;
+					}
+					for(int i=0;i<3 and playback == 1;i++){
+						current[i] = next[i];
+						if(!std::getline(infile,next[i])){
+							playback = 0;
+							std::cout << "The movie ended\nPress ctrl+R to rewind\n";
+						}
+					}
+				}
+				if(playback == 1){
+					interpolate(current,next,iter);
+					iter = (iter+1)%steps;
+					// std::cout << "going into renderGl1\n";
+					renderGL();
+					glfwSwapBuffers(window);
+					glfwPollEvents();
+				}
+				else{
+					iter = 0;
+					firsttime = 1;
+				}
+				lastTime = currentTime;
+			}
+		}
+		else{
+			// std::cout << "going into renderGl2\n";
+			renderGL();
+			// Swap front and back buffers
+			glfwSwapBuffers(window);
+			// Poll for and process events
+			glfwPollEvents();
+		}
 	}
 	
 	glfwTerminate();

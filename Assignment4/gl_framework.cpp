@@ -9,8 +9,9 @@ extern csX75::HNode* chest, *head, *rightUpperArm, *rightLowerArm, *leftUpperArm
 extern csX75::HNode* vbody, *vneck, *vhead, *vpod1arm, *vpod1, *vpod2arm, *vpod2, *vpod3arm, *vpod3, *vpod4arm, *vpod4;
 extern int objectSelected;
 extern int podno, podarmno, podselected;
-extern int light1, light2, spotlight, textureenable;
+extern int light1, light2, spotlight, textureenable, playback;
 extern bool enable_perspective;
+extern int reloadmovie;
 
 namespace csX75
 {
@@ -48,13 +49,48 @@ namespace csX75
 		// camera controls ------------------------------------------------------------//
 
 		if(key == GLFW_KEY_S && action == GLFW_PRESS && mods== GLFW_MOD_CONTROL){
-			std::cout<<light1<<" "<<light2<<" "<<spotlight<<" "<<textureenable<<std::endl;
+			std::ofstream myfile;
+			std::cout << "key frame saved\n";
+  			myfile.open ("keyframes.txt",std::ios_base::app);
+  			myfile<<light1<<" "<<light2<<" "<<spotlight<<" "<<textureenable<< " " << enable_perspective << std::endl;
+  			myfile.close();
 			chest->printAllParams();
-			std::cout<<std::endl;
+			myfile.open ("keyframes.txt",std::ios_base::app);
+			myfile<<std::endl;
+			myfile.close();
 			vbody->printAllParams();
-			std::cout<<std::endl;
-		}
+			myfile.open ("keyframes.txt",std::ios_base::app);
+			myfile<<std::endl;
+			myfile.close();
 
+		}
+		else if(key == GLFW_KEY_D && action == GLFW_PRESS && mods== GLFW_MOD_CONTROL){
+			std::ofstream myfile;
+			std::cout << "delete the contents of the keyframes.txt? (y or n) : ";
+			char resp;
+			std::cin >> resp;
+			if(resp == 'y'){
+				std::ofstream myfile;
+				myfile.open("keyframes.txt", std::ofstream::out | std::ofstream::trunc);
+				myfile.close();
+				std::cout << "contents of the keyframes.txt deleted\n";
+			}
+		}
+		else if(key == GLFW_KEY_P && action == GLFW_PRESS && mods== GLFW_MOD_CONTROL){
+			if(playback == 0){
+				playback = 1;
+				std::cout << "playback started\n";
+			}
+			else if(playback = 1){
+				playback = 0;
+				std::cout << "playback paused\n";
+			}
+
+		}
+		else if(key == GLFW_KEY_R && action == GLFW_PRESS && mods== GLFW_MOD_CONTROL){
+			reloadmovie = 1;
+			std::cout << "movie reloaded\n";
+		}
 		else if(key == GLFW_KEY_F6 && action == GLFW_PRESS){
 			if(!enable_perspective){
 				objectSelected = 3;

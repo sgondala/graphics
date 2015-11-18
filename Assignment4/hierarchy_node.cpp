@@ -1,6 +1,7 @@
 #include "hierarchy_node.hpp"
 
 #include <iostream>
+#include <fstream>
 
 extern GLuint vPosition,vColor,texCoord, vNormal,uModelViewMatrix,normalMatrix;
 extern std::vector<glm::mat4> matrixStack;
@@ -172,16 +173,28 @@ namespace csX75
 
 		return mult;
 	}
+	void HNode::printParamsToTerm(){
+		std::cout << tx << " " << ty << " " << tz << " " << rx << " " << ry << " " << rz << std::endl;
+		for(int i=0;i<children.size();i++){
+			children[i]->printParamsToTerm();
+		}
+	}
 
 	void HNode::printThisParams(){
-		if(parent==NULL){
-			std::cout<< tx <<" ";
-			std::cout<< ty <<" ";
-			std::cout<< tz <<" ";
+		std::ofstream myfile;
+  		myfile.open("keyframes.txt",std::ios_base::app);
+  		if(parent==NULL){
+			myfile<< tx <<" ";
+			myfile<< ty <<" ";
+			myfile<< tz <<" ";
 		}
-		std::cout<< rx <<" ";
-		std::cout<< ry <<" ";
-		std::cout<< rz <<" ";
+		else{
+			myfile << " ";
+		}
+		myfile<< rx <<" ";
+		myfile<< ry <<" ";
+		myfile<< rz;
+		myfile.close();
 	}
 
 	void HNode::printAllParams(){
@@ -189,6 +202,22 @@ namespace csX75
 		for(int i=0; i<children.size(); i++){
 			children[i]->printAllParams();
 		}
+	}
+
+	int HNode::setParams(double* params,int index){
+		if(parent == NULL){
+			tx = params[index];index++;
+			ty = params[index];index++;
+			tz = params[index];index++;
+		}
+		rx = params[index];index++;
+		ry = params[index];index++;
+		rz = params[index];index++;
+		update_matrices();
+		for(int i=0;i<children.size();i++){
+			index = children[i]->setParams(params,index);
+		}
+		return index;
 	}
 
 }
